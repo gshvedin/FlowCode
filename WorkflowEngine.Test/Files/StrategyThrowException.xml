@@ -1,0 +1,68 @@
+﻿<Strategy>
+
+  <Condition name="SelectStrategy">
+    <test expression="string-length('{0}') = 0 ">
+      <parameter type="appData" value="ConnectorBlackList..Id" />
+    </test>
+    <iftrue>
+      <Result name="BR_04" expression="{0}+2">
+        <parameter type="constant" value="90" />
+      </Result>      ​
+      ​
+    </iftrue>
+    <iffalse>
+      <Result name="BR_04" expression="0"/>
+      ​
+    </iffalse>
+  </Condition>
+
+  <DataStore name="DefineIsVIP" output= "IsVIP" expression = "True" lang="xpath2" />
+  
+  <Condition name="SelectStrategy22">
+    <test expression="string-length('{0}') > 0 ">
+      <parameter type="appData" value="ConnectorBlackList..Id" />
+    </test>
+    <iftrue>
+      <Result name="BR_05" expression="{0}+2">
+        <parameter type="constant" value="90" />
+      </Result>      ​
+      ​
+    </iftrue>
+    <iffalse>
+      <Result name="BR_05" expression="0"/>
+      ​
+    </iffalse>
+  </Condition>  
+  <SelectCase>
+    <Case>
+      <test expression="string-length('{0}') > 0 ">
+        <parameter type="appData" value="ConnectorBlackList..Id" />
+      </test>
+      <iftrue>
+        <Result name="BR_051" expression="{0}+2">
+          <parameter type="constant" value="90" />
+        </Result>
+      </iftrue>
+    </Case>
+    <Case>
+      <test expression="string-length('{0}') = 0 ">
+        <parameter type="appData" value="ConnectorBlackList..Id" />
+      </test>
+      <iftrue>
+        <Result name="BR_052" expression="{0}+2">
+          <parameter type="constant" value="90" />
+        </Result>
+      </iftrue>
+    </Case>
+    <Default>
+      <Result name="BR_05D" expression="{0}+2">
+        <parameter type="constant" value="90" />
+      </Result>
+    </Default>
+    ​
+  </SelectCase>
+  <Result name="BR_Result2" expression="{0}">
+    <parameter type="strategyData" value="count(.//*[ starts-with(name(),'BR') and number(.) > 0 ])" />    ​
+  </Result>
+  <Connector name="FailActivity"/> 
+</Strategy>
