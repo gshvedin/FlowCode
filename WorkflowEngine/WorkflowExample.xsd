@@ -1,0 +1,648 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Types ============================= -->
+  <xs:simpleType name="dataType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="json" />
+      <xs:enumeration value="xml" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="langType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="xpath" />
+      <xs:enumeration value="python" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="delay" final="restriction">
+    <xs:restriction base="xs:int">
+      <xs:minInclusive value="500"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="parameterType" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="appData" />
+      <xs:enumeration value="strategyData" />
+      <xs:enumeration value="constant" />
+      <xs:enumeration value="settings" />
+      <xs:enumeration value="list" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="functions" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="sum" />
+      <xs:enumeration value="count" />
+      <xs:enumeration value="countDistinct" />
+      <xs:enumeration value="avg" />
+      <xs:enumeration value="max" />
+      <xs:enumeration value="min" />
+      <xs:enumeration value="last" />
+      <xs:enumeration value="first" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Attributes ============================= -->
+  <xs:attribute name="type" type="parameterType">
+    <xs:annotation>
+      <xs:documentation>
+        Can be appdata, strategydata or const
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="name" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Name of parameter
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="value" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        For appData and strategyData is jpath query. For const - just value
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="default" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        For appData and strategyData is default jpath query.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="output" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Path for save result
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="saveAs" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        String (default value), or jNode - if we want to save as json
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="inputType" type="dataType">
+    <xs:annotation>
+      <xs:documentation>
+        Original format - xml or json
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="outputType" type="dataType">
+    <xs:annotation>
+      <xs:documentation>
+        Format to save -  xml or json
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="path" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        jpath reference to processing data tag
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="expression" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Can be writed using xpath or python. Depends on lang parameter (for default is xpath)
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="lang" type="xs:string" default="xpath">
+    <xs:annotation>
+      <xs:documentation>
+        The language of expression. Can be xPath or python
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="ms" type="delay">
+    <xs:annotation>
+      <xs:documentation>
+        Value on delay in ms. Default value 500
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="connectorName" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Value on delay in ms. Default value 500
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="key" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+        Name key in redis
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+  <xs:attribute name="options" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+      </xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
+
+  <!-- Elements ============================= -->
+  <xs:group name="ElementsGroup">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Start" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            Mark of process start
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Connector" minOccurs="0" maxOccurs="unbounded" >
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Execute dataconnector returned from registered dependency. Store result to appData ("output" attr)
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute ref ="type" use="required"/>
+                <xs:attribute ref ="name" use="required"/>
+                <xs:attribute ref ="value" use="required"/>
+                <xs:attribute ref="default" use="optional"/>
+                <xs:attribute ref="options" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute ref="name" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current activity name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="output" use="required"/>
+          <xs:attribute ref="saveAs" use="optional"/>
+          <xs:attribute ref="connectorName" use ="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DataTransform">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Provide transformation from one data structure to another using xslt template
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="template">
+              <xs:complexType>
+                <xs:attribute ref="inputType" use="required"/>
+                <xs:attribute ref="outputType" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current activity name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="path" use="required"/>
+          <xs:attribute ref="output" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SelectCase" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Make case condition check for flow and pass to first section where expression returns "true"
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="Case" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="test">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="parameter" maxOccurs="unbounded">
+                          <xs:complexType>
+                            <xs:attribute ref="type" use="required"/>
+                            <xs:attribute ref="value" use="required"/>
+                            <xs:attribute ref="default" use="optional" />
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                      <xs:attribute ref="expression" use="required"/>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="iftrue" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:group ref="ElementsGroup" minOccurs="1" maxOccurs="unbounded"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="name" type="xs:string" use="optional">
+                  <xs:annotation>
+                    <xs:documentation>
+                      Case name
+                    </xs:documentation>
+                  </xs:annotation>
+                </xs:attribute>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="Default"  minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:group ref="ElementsGroup" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute ref="name" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current activity name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Parallel">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Parallel execution of included actions.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:group ref="ElementsGroup" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Condition" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Make condition check for flow and pass to iftrue/iffalse section body
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="test">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:attribute ref="type" use="required" />
+                      <xs:attribute ref="value" use="required" />
+                      <xs:attribute ref="default" use="optional" />
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute ref="expression" use="required" />
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="iftrue" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:group ref="ElementsGroup" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="iffalse" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:group ref="ElementsGroup" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute ref="name" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current activity name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Delay">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Make delay. Required attribute ms. Minimal delay is 500ms
+            </xs:documentation>
+          </xs:annotation>
+          <xs:attribute name="name" type="xs:string" use="optional" />
+          <xs:attribute ref="ms" use="required" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Point">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Mark point for GoTo operation
+            </xs:documentation>
+          </xs:annotation>
+          <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Point name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="GoTo">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Unconditionally pass to appropriate action of workflow (defined by "name")
+            </xs:documentation>
+          </xs:annotation>
+          <xs:attribute name="actionName" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                GoTo action name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Strategy">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Execute strategy calculation
+            </xs:documentation>
+          </xs:annotation>
+          <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Strategy name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="output" use="required"/>
+          <xs:attribute ref="saveAs" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="UserTask">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Stop process and run after external calling
+            </xs:documentation>
+          </xs:annotation>
+          <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Name of the user task
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="DataStore">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Save result of executed expression to defined path of appData
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute ref="type" use="required"/>
+                <xs:attribute ref="value" use="required"/>
+                <xs:attribute ref="name" use="required"/>
+                <xs:attribute ref="default" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="lang" type="xs:string" use="optional" default="xpath">
+            <xs:annotation>
+              <xs:documentation>
+                The language of expression. Can be xPath or python
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current activity name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="output" use="required"/>
+          <xs:attribute ref="expression" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Result">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Make result for strategy execution (only)
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element name="parameter">
+              <xs:complexType>
+                <xs:attribute ref="type" use="required"/>
+                <xs:attribute ref="name" use="required"/>
+                <xs:attribute ref="value" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute ref="lang" use="optional"/>
+          <xs:attribute ref="expression" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="CustomAction" maxOccurs="unbounded" >
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Execute custom action returned from registered dependency
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="parameter">
+              <xs:complexType>
+                <xs:attribute ref="type" use="required"/>
+                <xs:attribute ref="name" use="required"/>
+                <xs:attribute ref="value" use="required"/>
+                <xs:attribute ref="default" use="optional"/>
+                <xs:attribute ref="options" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Activity name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="output" use="required"/>
+          <xs:attribute ref="saveAs" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Dummy">
+        <xs:annotation>
+          <xs:documentation>
+            Do nothing. Dummy action for undefined Items of workflow.
+            Just exists.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="SetCounter" maxOccurs="unbounded" >
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Store counter in redis
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="parameter">
+              <xs:complexType>
+                <xs:attribute ref ="type" use="required"/>
+                <xs:attribute ref ="name" use="required"/>
+                <xs:attribute ref ="value" use="required"/>
+              </xs:complexType>
+            </xs:element>
+            <xs:element ref="Tags"/>
+          </xs:sequence>
+          <xs:attribute ref="name" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current counter name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="key" use="required"/>
+          <xs:attribute name="ttl" type="xs:int">
+            <xs:annotation>
+              <xs:documentation>
+                Data storage time, min
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="GetCounter" maxOccurs="unbounded" >
+        <xs:complexType>
+          <xs:annotation>
+            <xs:documentation>
+              Get counter from redis
+            </xs:documentation>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="parameter">
+              <xs:complexType>
+                <xs:attribute ref ="type" use="required"/>
+                <xs:attribute ref ="name" use="required"/>
+                <xs:attribute ref ="value" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute ref="name" use="required">
+            <xs:annotation>
+              <xs:documentation>
+                Current counter name
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="key" use="required"/>
+          <xs:attribute name="period" use="required" type="xs:int">
+            <xs:annotation>
+              <xs:documentation>
+                Data retrieval period, min
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="function" use="required" type="functions">
+            <xs:annotation>
+              <xs:documentation>
+                Functions for data processing
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="tag" use="required" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                Tag name for using in function
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="filter" use="optional" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>
+                Filter to select the required data range by column: amount > {0}.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute ref="output" use="required"/>
+          <xs:attribute name="ignoreCache" use="optional" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>
+                If the key is requested several times in one execution,
+                then the data after the first request to the radis will be cached.
+              </xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Finish" maxOccurs="1" >
+        <xs:annotation>
+          <xs:documentation>
+            Mark of process finish
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+
+  <!-- Tags ============================= -->
+  <xs:element name="Tags">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:documentation>
+          Tags for later use
+        </xs:documentation>
+      </xs:annotation>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="parameter">
+          <xs:complexType>
+            <xs:attribute ref ="type" use="required"/>
+            <xs:attribute ref ="name" use="required"/>
+            <xs:attribute ref ="value" use="required"/>
+            <xs:attribute ref ="default" use="optional"/>
+            <xs:attribute ref ="options" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Workflow ============================= -->
+  <xs:element name="Workflow">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:documentation>
+          The main element needed for workflow execution
+        </xs:documentation>
+      </xs:annotation>
+      <xs:group ref="ElementsGroup" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:attribute name="compressOutput" use="optional" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>
+            Compress output response
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

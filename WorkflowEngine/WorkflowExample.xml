@@ -1,0 +1,28 @@
+﻿<Workflow>
+	<Start/>
+	<UserTask name="UI1" markupName="assdd.mkp"/>
+	 
+	<UserTask name="UI2"/>
+	<Condition name="uui" >
+		<test expression="{0} = 1"></test>
+		<iftrue>
+			<GoTo actionName="sidhihio"/>
+		</iftrue>
+	</Condition>
+	
+	<Point name="sidhihio"/>
+	
+	<!--WAIT FOR USER ACTION-->
+	
+	<DataStore output="$.abc"/>
+	
+	<Condition name="uui" >
+		<test expression="{0} = 1"></test>
+		<iftrue>
+			<GoTo actionName="sidhihio"/>
+		</iftrue>
+	</Condition>
+	
+	
+	<UserTask name="UI3"/>
+</Workflow>
