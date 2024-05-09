@@ -54,7 +54,7 @@ namespace WorkflowEngine
 
         public T GetDependency<T>() where T : class
         {
-            return DC?.ServiceProvider?.GetService(typeof(T)) as T;
+            return DC?.Resolve<T>();
         }
 
         public bool CheckDependencies()

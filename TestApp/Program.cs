@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using WorkflowEngine;
 using WorkflowEngine.Core.Dependencies.Connectors;
@@ -19,9 +20,58 @@ namespace TestApp
         //states create processes, processes create states
         public static void Main(string[] args)
         {
-            Execute();
+            ReadDir();
+            Console.WriteLine("ss");
         }
 
+        private static void ReadDir()
+        {
+            Console.WriteLine("Введите путь к директории:");
+            string dirPath = Console.ReadLine();
+
+            if (Directory.Exists(dirPath))
+            {
+                Console.WriteLine("Введите имя текстового файла для сохранения списка (например, output.txt):");
+                string outputFile = Console.ReadLine();
+
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(outputFile))
+                    {
+                        WriteDirContents(dirPath, writer, "");
+                    }
+
+                    Console.WriteLine($"Список файлов и папок был сохранен в {outputFile}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Произошла ошибка: {e.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Указанная директория не существует.");
+            }
+        }
+
+        
+ 
+static void WriteDirContents(string dirPath, StreamWriter writer, string indent)
+        {
+            string[] files = Directory.GetFiles(dirPath);
+            string[] directories = Directory.GetDirectories(dirPath);
+
+            foreach (string file in files)
+            {
+                writer.WriteLine(indent + Path.GetFileName(file));
+            }
+
+            foreach (string directory in directories)
+            {
+                writer.WriteLine(indent + Path.GetFileName(directory) + "/");
+                WriteDirContents(directory, writer, indent + "  ");
+            }
+        }
         private static void Execute()
         {
             //retrieve data json
@@ -52,10 +102,9 @@ namespace TestApp
                        .AddSingleton<ICounterService, CounterService>()
                        .BuildServiceProvider();
 
-            return new WorkflowDependecyContainer()
+            return new WorkflowDependecyContainer(serviceProvider)
             {
                 MetaInfo = new Dictionary<string, object>() { { "RequestId", Guid.NewGuid() } },
-                ServiceProvider = serviceProvider
             };
         }
 
