@@ -65,9 +65,9 @@ namespace WorkflowEngine
             {
                 WorkflowContext = await (WorkflowContext ?? new WorkflowContext(CurrentInstance)).ExecuteAsync();
             }
-            catch (OperationCanceledException exception)
+            catch (OperationCanceledException)
             {
-                throw exception;
+                throw;
             }
             finally
             {

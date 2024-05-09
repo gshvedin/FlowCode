@@ -20,64 +20,18 @@ namespace TestApp
         //states create processes, processes create states
         public static void Main(string[] args)
         {
-            ReadDir();
-            Console.WriteLine("ss");
+            Execute();
+            Console.WriteLine("Enter any key to quit");
+            Console.ReadKey();
         }
 
-        private static void ReadDir()
-        {
-            Console.WriteLine("Введите путь к директории:");
-            string dirPath = Console.ReadLine();
-
-            if (Directory.Exists(dirPath))
-            {
-                Console.WriteLine("Введите имя текстового файла для сохранения списка (например, output.txt):");
-                string outputFile = Console.ReadLine();
-
-                try
-                {
-                    using (StreamWriter writer = new StreamWriter(outputFile))
-                    {
-                        WriteDirContents(dirPath, writer, "");
-                    }
-
-                    Console.WriteLine($"Список файлов и папок был сохранен в {outputFile}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Произошла ошибка: {e.Message}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Указанная директория не существует.");
-            }
-        }
-
-        
- 
-static void WriteDirContents(string dirPath, StreamWriter writer, string indent)
-        {
-            string[] files = Directory.GetFiles(dirPath);
-            string[] directories = Directory.GetDirectories(dirPath);
-
-            foreach (string file in files)
-            {
-                writer.WriteLine(indent + Path.GetFileName(file));
-            }
-
-            foreach (string directory in directories)
-            {
-                writer.WriteLine(indent + Path.GetFileName(directory) + "/");
-                WriteDirContents(directory, writer, indent + "  ");
-            }
-        }
+     
         private static void Execute()
         {
             //retrieve data json
-            string data = System.IO.File.ReadAllText("data.json");
+            string data = System.IO.File.ReadAllText("TestData/data.json");
             //retrieve workflow descriptor xml
-            string workflow = System.IO.File.ReadAllText("wf.xml");
+            string workflow = System.IO.File.ReadAllText("TestData/wf.xml");
 
             //execute workflow
             var dc = GetDependencyContainer();
@@ -86,8 +40,7 @@ static void WriteDirContents(string dirPath, StreamWriter writer, string indent)
                 .ExecuteAsync(data, CancellationToken.None)
                 .Result;
             var compressed = wf.CurrentInstance.ContextData.CompressedData.ToString();
-            bool co = wf.CurrentInstance.CompressOutput;
-            Console.ReadLine();
+            Console.WriteLine(compressed);
 
         }
 
