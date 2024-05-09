@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace WorkflowEngine.Core
     {
         private List<WorkflowActionBase> executedActions = new List<WorkflowActionBase>();
 
-        [MethodTimer.Time]
+
         public ContextData(string contextData, IInstance currentInstance)
         {
             CurrentInstance = currentInstance;
@@ -33,7 +33,7 @@ namespace WorkflowEngine.Core
 
         public JObject CompressedData
         {
-            // [MethodTimer.Time]
+            //
             get
             {
                 if (string.IsNullOrEmpty(CurrentInstance.WorkflowDefinition))
@@ -88,7 +88,7 @@ namespace WorkflowEngine.Core
                         JToken token = Data.SelectToken(path);
                         if (token != null)
                         {
-                            result.TryAddByPath(token.Path, token);
+                            result.AddByPath(token.Path, token);
                         }
                     }
 
@@ -105,16 +105,7 @@ namespace WorkflowEngine.Core
         {
             lock (Data)
             {
-                JToken token = Data.SelectToken(name);
-
-                if (token == null)
-                {
-                    Data.Add(name, value?.ToString());
-                }
-                else
-                {
-                    token.Replace(value?.ToString());
-                }
+                Data.AddOrReplaceByPath(name, value?.ToString());
             }
         }
 
@@ -144,18 +135,7 @@ namespace WorkflowEngine.Core
 
             // если массив вычитываем ранее созданное свойство обертку, иначе берем токен
             JToken jToken = jobj?.SelectToken("Items") ?? jobj;
-            lock (Data)
-            {
-                JToken token = Data.SelectToken(name);
-                if (token == null)
-                {
-                    Data.Add(name, jToken);
-                }
-                else
-                {
-                    token.Replace(jToken);
-                }
-            }
+            SetValue(name, jToken);
         }
 
         public string GetValue(string name)
