@@ -4,38 +4,44 @@
 	
 		<html>
 			<head>
-				<title>Payment details</title>
+				<title>Pay Inform</title>
 			</head>
 			<body>
-				<h1>Payment details</h1>
-				<p>
-					Service ID: <xsl:value-of select="serviceId"/>
-				</p>
-				<p>
-					Phone: <xsl:value-of select="phone"/>
-				</p>
-				<p>
-					Amount: <xsl:value-of select="amount"/>
-				</p>
-				<p>
-					Account: <xsl:value-of select="account"/>
-				</p>
-				<table border="0">
-					<tr>
-						<th>Param</th>
-						<th>Value</th>
-					</tr> 
-					<xsl:for-each select="AddParamConnector_Result">
+				<div bgcolor="gray">
+					
+					<h1>Payment details</h1>
+					<p>
+						Service ID: <xsl:value-of select="serviceId"/>
+					</p>
+					<p>
+						Phone: <xsl:value-of select="phone"/>
+					</p>
+					<p>
+						Amount: <xsl:value-of select="amount"/>
+					</p>
+					<p>
+						Account: <xsl:value-of select="account"/>
+					</p>
+
+					<table border="1">
 						<tr>
-							<td>
-								<xsl:value-of select="param"/>
-							</td>
-							<td>
-								<xsl:value-of select="value"/>
-							</td>
+							<th>Param</th>
+							<th>
+								<xsl:value-of select="count(AddParamConnector_Result//*)"/>
+							</th>
 						</tr>
-					</xsl:for-each>
-				</table>
+						<xsl:for-each select="AddParamConnector_Result">
+							<tr>
+								<td>
+									<xsl:value-of select="param"/>
+								</td>
+								<td>
+									<xsl:value-of select="value"/>
+								</td>
+							</tr>
+						</xsl:for-each>
+					</table>
+				</div>
 			</body>
 		</html>
 	</xsl:template>

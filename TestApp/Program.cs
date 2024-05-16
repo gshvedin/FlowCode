@@ -63,7 +63,7 @@ namespace TestApp
                        .AddSingleton<IWorkflowAuditService, WorkFlowAudit>()
                        .AddSingleton<IListService, ListService>()
                        .AddSingleton<ICounterService, CounterService>()
-                        .AddSingleton<IWorkflowProcedureService, WorkflowProcedureService>()
+                       .AddSingleton<IWorkflowProcedureService, WorkflowProcedureService>()
                        .BuildServiceProvider();
 
             return new WorkflowDependecyContainer(serviceProvider)
