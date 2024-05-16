@@ -71,6 +71,11 @@ namespace WorkflowEngine.Test.ActionIntegrationTests
                 MetaInfo = new Dictionary<string, object>() { { "RequestId", Guid.NewGuid() } }
             };
         }
+
+        public T Resolve<T>()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 #pragma warning disable SA1402 // File may only contain a single type

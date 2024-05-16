@@ -1,0 +1,108 @@
+﻿<Workflow>
+	<!-- data example {
+  "serviceId": 1234,
+  "phone": "0938002030",
+  "amount": 555,
+  "account": "UA213223130000026007233566001" 
+  
+  }-->
+
+	<!-- процедура генерации html кода платежной интрукции -->
+	<Start/>
+
+	<Condition name="CheckAddData" >
+		<!--1.1/провеяем есть ли доп параметры необходимые для шаблонизации полученные по сервису -->
+		<test expression="string-length('{0}') = 0">
+			<parameter type="appData" value="$.AddParamConnector_Result.[0].param"  />
+		</test>
+		<!--1.2/ если оно больше 0 то идем на одну форму иначе на вторую-->
+		<iftrue>
+
+			<Connector connectorName="AddParamConnector" name="AddParamConnector" output="AddParamConnector_Result">
+				<parameter name="serviceId" type="appData" value="$.serviceId" default="0" />
+			</Connector>
+
+			<!-- data example {
+			  "serviceId": 1234,
+			  "phone": "0938002030",
+			  "amount": 555,
+			  "account": "UA213223130000026007233566001",
+			  "AddParamConnector_Result": [
+				{
+				  "param": "p1",
+				  "value": 200
+				},
+				{
+				  "param": "p2",
+				  "value": 300
+				},
+				{
+				  "param": "p3",
+				  "value": 400
+				},
+				{
+				  "param": "p4",
+				  "value": 500
+				},
+				{
+				  "param": "p5",
+				  "value": 600
+				}
+			  ]
+			}-->
+
+		</iftrue>
+	</Condition>
+
+	<DataTransform name="generateHtml" output="PayDetails_Result" path="$" >
+		<template inputType="json" outputType="xml">
+			<![CDATA[
+			<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:output method="html" indent="yes"/>
+	<xsl:template match="/root">
+	
+		<html>
+			<head>
+				<title>Payment details</title>
+			</head>
+			<body>
+				<h1>Payment details</h1>
+				<p>
+					Service ID: <xsl:value-of select="serviceId"/>
+				</p>
+				<p>
+					Phone: <xsl:value-of select="phone"/>
+				</p>
+				<p>
+					Amount: <xsl:value-of select="amount"/>
+				</p>
+				<p>
+					Account: <xsl:value-of select="account"/>
+				</p>
+				<table border="0">
+					<tr>
+						<th>Param</th>
+						<th>Value</th>
+					</tr> 
+					<xsl:for-each select="AddParamConnector_Result">
+						<tr>
+							<td>
+								<xsl:value-of select="param"/>
+							</td>
+							<td>
+								<xsl:value-of select="value"/>
+							</td>
+						</tr>
+					</xsl:for-each>
+				</table>
+			</body>
+		</html>
+	</xsl:template>
+</xsl:stylesheet>]]>
+		</template>
+	</DataTransform>
+
+
+	<Finish/>
+
+</Workflow>
