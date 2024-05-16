@@ -1,0 +1,28 @@
+﻿<root>
+	<serviceId>1234</serviceId>
+	<phone>0938002030</phone>
+	<amount>555</amount>
+	<account>UA213223130000026007233566001</account>
+	<AddParamConnector_Result>
+		<param>p1</param>
+		<value>200</value>
+	</AddParamConnector_Result>
+	<AddParamConnector_Result>
+		<param>p2</param>
+		<value>300</value>
+	</AddParamConnector_Result>
+	<AddParamConnector_Result>
+		<param>p3</param>
+		<value>400</value>
+	</AddParamConnector_Result>
+	<AddParamConnector_Result>
+		<param>p4</param>
+		<value>500</value>
+	</AddParamConnector_Result>
+	<AddParamConnector_Result>
+		<param>p5</param>
+		<value>600</value>
+	</AddParamConnector_Result>
+	<StartProcess />
+	<CurrentProcess>generateHtml</CurrentProcess>
+</root>

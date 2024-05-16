@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core;
+using WorkflowEngine.Core.Dependencies.Strategies;
+using WorkflowEngine.Core.Dependencies.WorkflowProcedures;
 using WorkflowEngine.Helpers;
 using WorkflowEngine.Misc;
 
@@ -17,7 +19,7 @@ namespace WorkflowEngine.Actions.Implementations
         public override async Task ExecuteAsync()
         {
             string procedureName = Item.GetAttribute("procedureName");
-            string actionXml = CurrentInstance.WorkflowProcedures.GetWorkflowProcedure(procedureName);
+            string actionXml = await CurrentInstance.WorkflowProcedures.GetWorkflowProcedure(procedureName);
 
             if (!string.IsNullOrEmpty(actionXml))
             {

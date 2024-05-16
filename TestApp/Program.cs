@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,8 @@ using WorkflowEngine.Core.Dependencies.CustomActions;
 using WorkflowEngine.Core.Dependencies.Lists;
 using WorkflowEngine.Core.Dependencies.Strategies;
 using WorkflowEngine.Helpers.Audit;
+using WorkflowEngine.Helpers;
+using WorkflowEngine.Core.Dependencies.WorkflowProcedures;
 
 namespace TestApp
 {
@@ -20,6 +23,13 @@ namespace TestApp
         //states create processes, processes create states
         public static void Main(string[] args)
         {
+            //retrieve data json
+            //string data = System.IO.File.ReadAllText("TestData/data.json");
+            //JObject jobg = JObject.Parse(data);
+            //jobg.AddOrReplaceByPath("$.token.layeruno.1.value", "some valeu");
+            //Console.WriteLine(jobg.ToString());
+            //jobg.AddOrReplaceByPath("$..token.layeruno", "some valeu2");
+
             Execute();
             Console.WriteLine("Enter any key to quit");
             Console.ReadKey();
@@ -53,6 +63,7 @@ namespace TestApp
                        .AddSingleton<IWorkflowAuditService, WorkFlowAudit>()
                        .AddSingleton<IListService, ListService>()
                        .AddSingleton<ICounterService, CounterService>()
+                        .AddSingleton<IWorkflowProcedureService, WorkflowProcedureService>()
                        .BuildServiceProvider();
 
             return new WorkflowDependecyContainer(serviceProvider)
