@@ -1,16 +1,18 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 // using System.Threading;
 using WorkflowEngine.Core.Dependencies.Strategies;
 using WorkflowEngine.Core.Dependencies.WorkflowProcedures;
+using WorkflowEngine.Core.Evaluation;
 
 namespace TestApp
 {
     public class WorkflowProcedureService : IWorkflowProcedureService
     {
   
-        public Task<string> GetWorkflowProcedureAsync(string procedureName)
+        public Task<string> GetWorkflowProcedureAsync(string procedureName, IEnumerable<Parameter> parameters = null)
         {
             try
             {
@@ -30,6 +32,7 @@ namespace TestApp
 
 
         }
+ 
     }
 
 

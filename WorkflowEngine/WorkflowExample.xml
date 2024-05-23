@@ -1,7 +1,9 @@
 ﻿<Workflow>
 	<Start/>
 	<UserTask name="UI1" markupName="assdd.mkp"/>
-	 
+	
+	 <WorkflowProcedure name="getPrintoutData"  version="12" versionType="min" /> <!--strict|min|latest-->
+	
 	<UserTask name="UI2"/>
 	<Condition name="uui" >
 		<test expression="{0} = 1"></test>

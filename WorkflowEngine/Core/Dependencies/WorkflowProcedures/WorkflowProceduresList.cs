@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core.Dependencies;
 using WorkflowEngine.Core.Dependencies.WorkflowProcedures;
+using WorkflowEngine.Core.Evaluation;
 using WorkflowEngine.Helpers;
 
 namespace WorkflowEngine.Core.WorkflowProcedures
@@ -27,14 +28,14 @@ namespace WorkflowEngine.Core.WorkflowProcedures
             }
         }
 
-        public async Task<string> GetWorkflowProcedure(string procedureName)
+        public async Task<string> GetWorkflowProcedure(string procedureName, IEnumerable<Parameter> parameters = null)
         {
             if (this.FirstOrDefault(i => i.Name == procedureName)?.Definition is string inlineWfp && !string.IsNullOrEmpty(inlineWfp))
             {
                 return await Task.FromResult(inlineWfp);
             }
 
-            return await currentInstance.GetDependency<IWorkflowProcedureService>()?.GetWorkflowProcedureAsync(procedureName);
+            return await currentInstance.GetDependency<IWorkflowProcedureService>()?.GetWorkflowProcedureAsync(procedureName, parameters);
         }
     }
 }
