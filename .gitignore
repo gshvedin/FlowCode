@@ -351,3 +351,4 @@ obj/*
 /CRM.API/Services/CRM.BinotelWebHook/Logs/log20240115.txt
 /CRM.API/CRM.API/appsettings.json
 /CRM.API/CRM.API/appsettings.Development.json
+/WorkflowEngine/NugetPush.txt
