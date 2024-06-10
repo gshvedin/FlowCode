@@ -1,128 +1,87 @@
-﻿<Workflow>
-	<Start/>
-	<Condition name="CheckHtmlData" >
-		<test expression="string-length('{0}') = 0">
-			<parameter type="appData" value="$.PayDetails_Result"  />
-		</test>
-		<iftrue>
-			<WorkflowProcedure procedureName="GenerateDetailsProcedure"/>
-		</iftrue>
-	</Condition>
-		 
-	<Finish/>
+<Workflow>
 	
-	<Procedures>
-		<WorkflowProcedure procedureName="GenerateDetailsProcedure">
-			<Workflow>
-	<!-- data example {
-  "serviceId": 1234,
-  "phone": "0938002030",
-  "amount": 555,
-  "account": "UA213223130000026007233566001" 
-  
-  }-->
 
-	<!-- процедура генерации html кода платежной интрукции -->
-	<Start/>
+              <!-- Значит нажали кнпку далее отражаем следующи экран -->
+               <Condition name="checkButtonPressAfter2">
+                        <!-- Если на первом экране нажали кнопку далее и есть чекбокс то отражем экран с вводом комментария иначе отражаем єкран внесения средств -->
+                    	<test expression= "not({0})"> 
+			 	<parameter value="$.checkAgree" type ="appData" />
+			</test>	
+	                <iftrue>
+                                <!-- Фиксируем в контексте экран c которого пойдем на новый-->
+                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
+                                        <parameter value="ScreenCardInput" type="constant" />		
+                                </DataStore>
+                                <UserTask name="ScreenCommentInput"/>
+                        </iftrue>
+			<iffalse>
+                             <!-- Фиксируем в контексте экран c которого пойдем на новый-->
+                             <DataStore  output="$.prevScreen" expression="'{0}'"> 
+                                <parameter value="ScreenCardInput" type="constant" />		
+                             </DataStore>  
+			     <UserTask name="ScreenPay"/>
+                        </iffalse>
+               </Condition>
 
-	<Condition name="CheckAddData" >
-		<!--1.1/провеяем есть ли доп параметры необходимые для шаблонизации полученные по сервису -->
-		<test expression="string-length('{0}') = 0">
-			<parameter type="appData" value="$.AddParamConnector_Result.[0].param"  />
-		</test>
-		<!--1.2/ если оно больше 0 то идем на одну форму иначе на вторую-->
-		<iftrue>
+               <Point name="ScreenCommentInput"/>
 
-			<Connector connectorName="AddParamConnector" name="AddParamConnector" output="AddParamConnector_Result">
-				<parameter name="serviceId" type="appData" value="$.serviceId" default="0" />
-			</Connector>
+               <!-- Проверяем результирующее пользовательское действие на втором экране -->
+               <Condition name="checkButtonPressAfter3">
+                        <!-- Если на втором  экране нажали кнопку назад то нужно выйти на предыдущий экран иначе на экран pay -->
+                    	<test expression= "'{0}' = 'prevScreen'"> 
+			 	<parameter value="$.userAction" type ="appData" />
+			</test>	
+	                <iftrue>
+                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
+                                        <parameter value="ScreenCommentInput" type="constant" />		
+                                </DataStore>  
+                        	<UserTask name="ScreenCardInput"/>
+                        </iftrue>
+                        <iffalse>
+                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
+                                        <parameter value="ScreenCommentInput" type="constant" />		
+                                </DataStore> 
+			     <UserTask name="ScreenPay"/>
+                        </iffalse>
+               </Condition>
 
-			<!-- data example {
-			  "serviceId": 1234,
-			  "phone": "0938002030",
-			  "amount": 555,
-			  "account": "UA213223130000026007233566001",
-			  "AddParamConnector_Result": [
-				{
-				  "param": "p1",
-				  "value": 200
-				},
-				{
-				  "param": "p2",
-				  "value": 300
-				},
-				{
-				  "param": "p3",
-				  "value": 400
-				},
-				{
-				  "param": "p4",
-				  "value": 500
-				},
-				{
-				  "param": "p5",
-				  "value": 600
-				}
-			  ]
-			}-->
-
-		</iftrue>
-	</Condition>
-
-	<DataTransform name="generateHtml" output="PayDetails_Result" path="$" >
-		<template inputType="json" outputType="xml">
-			<![CDATA[
-			<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:output method="html" indent="yes"/>
-	<xsl:template match="/root">
-	
-		<html>
-			<head>
-				<title>Payment details</title>
-			</head>
-			<body>
-				<h1>Payment details</h1>
-				<p>
-					Service ID: <xsl:value-of select="serviceId"/>
-				</p>
-				<p>
-					Phone: <xsl:value-of select="phone"/>
-				</p>
-				<p>
-					Amount: <xsl:value-of select="amount"/>
-				</p>
-				<p>
-					Account: <xsl:value-of select="account"/>
-				</p>
-				<table border="0">
-					<tr>
-						<th>Param</th>
-						<th>Value</th>
-					</tr> 
-					<xsl:for-each select="AddParamConnector_Result">
-						<tr>
-							<td>
-								<xsl:value-of select="param"/>
-							</td>
-							<td>
-								<xsl:value-of select="value"/>
-							</td>
-						</tr>
-					</xsl:for-each>
-				</table>
-			</body>
-		</html>
-	</xsl:template>
-</xsl:stylesheet>]]>
-		</template>
-	</DataTransform>
+               <Point name="ScreenPay"/>
+                <!-- Проверяем результирующее пользовательское действие на экране pay -->
+               <Condition name="checkButtonPressAfter4">
+                        <!-- Если на экране pay нажали кнопку назад то нужно выйти на предыдущий экран -->
+                    	<test expression= "'{0}' = 'prevScreen' and '{1}' = 'ScreenCardInput'"> 
+                                 <parameter value="$.userAction" type ="appData" />
+                                 <parameter value="$.prevScreen" type ="appData" />
+			</test>	
+	                <iftrue>
+                                <!-- Фиксируем в контексте актуальный экран -->
+                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
+                                        <parameter value="ScreenPay" type="constant" />		
+                                </DataStore>
+				<UserTask name="ScreenCardInput"/>
+                        </iftrue>
+               </Condition>
 
 
-	<Finish/>
+                <!-- Проверяем результирующее пользовательское действие на экране pay -->
+                <Condition name="checkButtonPressAfter5">
+                        <!-- Если на экране pay нажали кнопку назад то нужно выйти на предыдущий экран -->
+                    	<test expression= "'{0}' = 'prevScreen' and '{1}' = 'ScreenCommentInput'"> 
+                                 <parameter value="$.userAction" type ="appData" />
+                                 <parameter value="$.prevScreen" type ="appData" />
+			</test>	
+	                <iftrue>
+                                <!-- Фиксируем в контексте актуальный экран -->
+                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
+                                        <parameter value="ScreenPay" type="constant" />		
+                                </DataStore>
+				<UserTask name="ScreenCommentInput"/>
+                        </iftrue>
+               </Condition>
 
-</Workflow>
-	
-		</WorkflowProcedure>		
+        <DataStore name="EndSave" output="$.endFlow.finalScreen" expression="'{0}'"> 
+              <parameter value="mainScreen" type="constant" />		
+        </DataStore>
 
-	</Procedures>
+   	<Finish/>
 </Workflow>

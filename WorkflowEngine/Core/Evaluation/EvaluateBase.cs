@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace WorkflowEngine.Core.Evaluation
 {
-    public class EvaluateBase
+    public partial class EvaluateBase
     {
-        private string expression;
-        private string result;
-        private int executionTime;
+        private string _result;
+        private int _executionTime;
+
+        ParsedExpression _parsedExpression;
 
         public EvaluateBase(XElement item, IInstance instance)
         {
@@ -29,47 +30,77 @@ namespace WorkflowEngine.Core.Evaluation
         public Task<string> EvaluateAsync()
         {
             DateTime ds = DateTime.Now;
-            XElement test = Item.Elements().Where(d => d.Name.LocalName == "test").FirstOrDefault() ?? Item;
-            Enum.TryParse(test.GetAttribute("lang"), true, out LangEnum langValue);
-
             try
             {
-                string expressionBase = test.GetAttribute("expression");
-                Parameters parameters = new Parameters().Read(test, Instance);
-                expression = string.Format(CultureInfo.InvariantCulture, expressionBase, parameters.GetArrayOfValues());
-                if (langValue == LangEnum.Python)
+
+                _parsedExpression = _parsedExpression ?? ParseExpression();
+                if (_parsedExpression.LangValue == LangEnum.Python)
                 {
-                    result = Evaluator.EvaluatePython(expression);
+                    _result = Evaluator.EvaluatePython(_parsedExpression.Expression);
                 }
                 else
                 {
-                    result = Evaluator.EvaluateXPath(expression, langValue == LangEnum.XPath2);
+                    _result = Evaluator.EvaluateXPath(_parsedExpression.Expression, _parsedExpression.LangValue == LangEnum.XPath2);
                 }
 
-                executionTime = (int)DateTime.Now.Subtract(ds).TotalMilliseconds;
+                _executionTime = (int)DateTime.Now.Subtract(ds).TotalMilliseconds;
             }
             catch (Exception ex)
             {
-                throw new WorkflowException($"Expression error: {ex.Message}.\nTest: {test.ToString()}", ex);
+                throw new WorkflowException($"Expression error: {ex.Message}.\nTest: {_parsedExpression?.ToString()}", ex);
             }
 
-            return Task.FromResult(result);
+            return Task.FromResult(_result);
+        }
+
+        private ParsedExpression ParseExpression()
+        {
+            XElement test = Item.Elements().Where(d => d.Name.LocalName == "test").FirstOrDefault() ?? Item;
+            Enum.TryParse(test.GetAttribute("lang"), true, out LangEnum langValue);
+            string expressionBase = test.GetAttribute("expression");
+            Parameters parameters = new Parameters().Read(test, Instance);
+            string expression = string.Format(CultureInfo.InvariantCulture, expressionBase, parameters.GetArrayOfValues());
+
+            ParsedExpression parsedExpression = new ParsedExpression
+            {
+                Expression = expression,
+                Test = test,
+                LangValue = langValue,
+                Parameters = parameters
+            };
+            return parsedExpression;
         }
 
         public async Task<bool> EvaluateBoolAsync()
         {
-            string result = await EvaluateAsync();
-            if (bool.TryParse(result, out bool resultBool))
+            try
             {
+                _parsedExpression = ParseExpression();
+            }
+            catch (Exception ex)
+            {
+                throw new WorkflowException($"Expression error: {ex.Message}.\nTest: {_parsedExpression?.ToString()}", ex);
+            }
+
+            if (bool.TryParse(_parsedExpression.Expression, out bool inlineBool))
+            {
+                _result = inlineBool.ToString();
+                return inlineBool;
+            }
+
+            _result = await EvaluateAsync();
+            if (bool.TryParse(_result, out bool resultBool))
+            {
+                _result = resultBool.ToString();
                 return resultBool;
             }
 
-            throw new WorkflowException($"Unable to cast '{result}' to boolean.");
+            throw new WorkflowException($"Unable to cast '{_result}' to boolean.");
         }
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(new { Expression = expression, Result = result, ExecutionTime = executionTime });
+            return JsonConvert.SerializeObject(new { Expression = _parsedExpression?.ToString(), Result = _result, ExecutionTime = _executionTime });
         }
     }
 }

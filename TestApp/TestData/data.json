@@ -1,7 +1,5 @@
 {
-  "serviceId": 1234,
-  "phone": "0938002030",
-  "amount": 555,
-  "account": "UA213223130000026007233566001"
-  
+  "CurrentProcess": "ScreenCardInput",
+  "userAction": "nextScreen",
+  "checkAgree": true
 }
