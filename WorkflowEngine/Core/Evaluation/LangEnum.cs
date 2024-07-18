@@ -8,5 +8,6 @@
         XPath2 = 1,
         Python = 2,
         JPath = 3,
+        JScript = 4
     }
 }

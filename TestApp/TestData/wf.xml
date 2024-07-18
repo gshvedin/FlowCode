@@ -2,19 +2,27 @@
 	<Start/>
 
 	<!--<UserTask name="suu"/>-->
-<Script name="setStageInputParam" output="$.requestDataList.[0]" saveAs="jn" path="$.requestDataList">
+<Script name="setStageInputParam" output="$.requestDataList.[0]" saveAs="jn" path="$.requestDataList" lang="jscript">
 	<parameter name="stage" type="constant" value="X_verify" />
 		<ScriptText>
 			<![CDATA[
-import json
+				// Assume jsonData is a JSON string containing the data
+				var data = JSON.parse(context);
 
-data = json.loads(context)
-for requestData in data:
-    if 'inputParam' in requestData:
-        for param in requestData['inputParam']:
-            if 'value' in param and param['value']:
-                param['stage'] = stage  # Set or modify the 'stage' value
-json.dumps(data)
+				// Iterate over the data array
+				data.forEach(requestData => {
+					if (requestData.inputParam) { // Check if 'inputParam' exists
+						requestData.inputParam.forEach(param => {
+							if (param.value) { // Check if 'value' exists and is truthy
+								param.stage = stage; // Set or modify the 'stage' value
+							}
+						});
+					}
+				});
+
+				// Convert the modified object back to a JSON string
+				var result = JSON.stringify(data);
+
 			]]>
 		</ScriptText>
 	</Script>
