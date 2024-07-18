@@ -1,34 +1,61 @@
 {
-    
-    "AddParamConnector": [
-        {
-            "param": "{serviceId}",
-            "value": 200
-        },
-        {
-            "param": "p1",
-            "value": 200
-        },
-        {
-            "param": "p2",
-            "value": 300
-        },
-        {
-            "param": "p3",
-            "value": 400
-        },
-        {
-            "param": "p4",
-            "value": 500
-        },
-        {
-            "param": "p5",
-            "value": 600
-        }
-    ],
 
-    "ConnectorLimit": {
-        "LimitValue": 1230,
-        "TotalLimitUsed": 45000
+  "AddParamConnector": [
+    {
+      "param": "{serviceId}",
+      "value": 200
+    },
+    {
+      "param": "p1",
+      "value": 200
+    },
+    {
+      "param": "p2",
+      "value": 300
+    },
+    {
+      "param": "p3",
+      "value": 400
+    },
+    {
+      "param": "p4",
+      "value": 500
+    },
+    {
+      "param": "p5",
+      "value": 600
     }
+  ],
+
+  "infosearch": {
+    "response": {
+      "LimitValue": 1230,
+      "transaction": [
+        {
+          "param": "{serviceId}",
+          "value": 200
+        },
+        {
+          "param": "p1",
+          "value": 200
+        },
+        {
+          "param": "p2",
+          "value": 300
+        },
+        {
+          "param": "p3",
+          "value": 400
+        },
+        {
+          "param": "p4",
+          "value": 500
+        },
+        {
+          "param": "p5",
+          "value": 600
+        }
+      ]
+    }
+  }
 }

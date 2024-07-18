@@ -71,6 +71,9 @@ namespace WorkflowEngine.Actions
                 case ActionsEnum.GetCounter:
                     workflowActionBase = new CounterGetAction(item);
                     break;
+                case ActionsEnum.Script:
+                    workflowActionBase = new ScriptAction(item);
+                    break;
                 default:
                     workflowActionBase = new DummyAction();
                     break;

@@ -25,7 +25,7 @@ namespace WorkflowEngine.Core
         Guid GetCurrentRequestId();
 
         string GetValue(string name);
-
+        void RemoveValue(string name);
         void SetCurrentProcess(WorkflowActionBase action);
 
         void SetValue(string name, object value);

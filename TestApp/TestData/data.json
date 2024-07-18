@@ -1,5 +1,57 @@
 {
-  "CurrentProcess": "ScreenCardInput",
-  "userAction": "nextScreen",
-  "checkAgree": true
+  "terminalConfiguration": {
+    "configuration": {
+      "LocaleList": [
+        "ua",
+        "en"
+      ]
+    }
+  }, 
+  "requestDataList": [
+    {
+      "transactionId": 0,
+      "order": 0,
+      "lang": "ua",
+      "optionalData": null,
+      "inputParam": [
+        {
+          "orderid": 0,
+          "name": "card",
+          "kindId": 2,
+          "identifierType": 1,
+          "value": "5555444466667777",
+          "stage": "",
+          "caption": "Номер карты"
+        },
+        {
+          "orderid": 1,
+          "name": "phone",
+          "kindId": 3,
+          "identifierType": 1,
+          "value": "+380503666666",
+          "stage": "",
+          "caption": "Номер телефона"
+        },
+        {
+          "orderid": 3,
+          "name": "skey",
+          "kindId": 30,
+          "identifierType": 1,
+          "value": "",
+          "stage": "",
+          "caption": "Спец ключ"
+        },
+        {
+          "orderid": 4,
+          "name": "period",
+          "kindId": 27,
+          "identifierType": 1,
+          "value": "35-78",
+          "stage": "",
+          "caption": "Период"
+        }
+      ]
+    }
+  ]
+ 
 }

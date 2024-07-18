@@ -38,6 +38,10 @@ namespace WorkflowEngine.Core.Evaluation
                 {
                     _result = Evaluator.EvaluatePython(_parsedExpression.Expression);
                 }
+                else if(_parsedExpression.LangValue == LangEnum.JPath)
+                {
+                    _result = Instance.ContextData.GetValue(_parsedExpression.Expression);
+                }
                 else
                 {
                     _result = Evaluator.EvaluateXPath(_parsedExpression.Expression, _parsedExpression.LangValue == LangEnum.XPath2);

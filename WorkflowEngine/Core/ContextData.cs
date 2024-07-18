@@ -105,24 +105,48 @@ namespace WorkflowEngine.Core
         {
             lock (Data)
             {
-                Data.AddOrReplaceByPath(name, value?.ToString());
+
+                // если массив вычитываем ранее созданное свойство обертку, иначе берем токен
+                if (value is JToken jToken)
+                {
+                    Data.AddOrReplaceByPath(name, jToken);
+                }
+                else if (value is IEnumerable<JToken> tokens)
+                {
+                    Data.AddOrReplaceByPath(name, tokens);
+                }
+                else
+                {
+                    Data.AddOrReplaceByPath(name, value?.ToString());
+
+                }
             }
         }
 
         public void SetValueAsJsonNode(string name, string value)
         {
-            // для корректной сериализации массивов оборачиваем в свойство
             if ((bool)value?.Trim().StartsWith("["))
             {
-                value = "{ 'Items':" + value + "}";
+                try
+                {
+                    var tokens = JArray.Parse(value);
+                    SetValue(name, tokens);
+                    return;
+                }
+                catch (Exception)
+                {
+                    SetValue(name, value);
+                    return;
+                }
             }
 
-            JObject jobj = null;
             if (!string.IsNullOrEmpty(value))
             {
                 try
                 {
-                    jobj = JObject.Parse(value);
+                    var jobj = JObject.Parse(value);
+                    SetValue(name, jobj);
+                    return;
                 }
 
                 /*supressing failed parsing and save direct as string*/
@@ -132,10 +156,6 @@ namespace WorkflowEngine.Core
                     return;
                 }
             }
-
-            // если массив вычитываем ранее созданное свойство обертку, иначе берем токен
-            JToken jToken = jobj?.SelectToken("Items") ?? jobj;
-            SetValue(name, jToken);
         }
 
         public string GetValue(string name)
@@ -182,6 +202,19 @@ namespace WorkflowEngine.Core
         {
             executedActions.Add(action);
             SetValue("CurrentProcess", action?.Name);
+        }
+
+        public void RemoveValue(string name)
+        {
+            // remove value from context
+            lock (Data)
+            {
+                JToken token = Data.SelectToken(name);
+                if (token != null)
+                {
+                    token.Parent.Remove();
+                }
+            }
         }
     }
 }

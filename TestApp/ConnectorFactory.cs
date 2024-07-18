@@ -41,7 +41,7 @@ namespace TestApp
             // interpolate parameters to result
             foreach (var parameter in parameters)
             {
-                result = result.ToString().Replace($"{{{parameter.Name}}}", parameter.Value.ToString());
+                result = result.ToString().Replace($"{{{parameter.Name}}}", parameter.Value?.ToString());
             }
 
             return result.ToString();

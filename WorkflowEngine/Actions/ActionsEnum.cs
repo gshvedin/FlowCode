@@ -23,5 +23,6 @@
         WorkflowProcedure = 16,
         GetCounter = 17,
         SetCounter = 18,
+        Script = 19,
     }
 }

@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using WorkflowEngine.Misc;
 using WorkflowEngine.Helpers;
 using System.Threading.Tasks;
+using WorkflowEngine.Core.Dependencies.CustomFunctions;
 
 namespace WorkflowEngine.Actions.Implementations
 {
@@ -37,7 +38,7 @@ namespace WorkflowEngine.Actions.Implementations
                 }
 
                 // make transform via XSLT template
-                string result = TransformationHelper.XsltTransform(templateElement.Value, inputXml);
+                string result = TransformationHelper.XsltTransform(templateElement.Value, inputXml, null, CurrentInstance.GetDependency<ICustomFunctionProvider>());
 
                 // transform output result to appropriate type (default xml), json if needed
                 if (templateElement.GetAttribute("outputType")?.ToLower(CultureInfo.CurrentCulture) == "json")

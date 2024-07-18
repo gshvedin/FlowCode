@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Globalization;
+using System;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core.Evaluation;
 using WorkflowEngine.Helpers;
@@ -18,7 +20,16 @@ namespace WorkflowEngine.Actions.Implementations
         public override async Task ExecuteAsync()
         {
             string result = await new EvaluateBase(Item, CurrentInstance).EvaluateAsync();
-            CurrentInstance.ContextData.SetValue(Item.GetAttribute("output") ?? Name, result);
+            string savingPath = Item?.Attribute("output")?.Value ?? Name;
+            if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
+            {
+                CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
+            }
+            else
+            {
+                CurrentInstance.ContextData.SetValue(savingPath, result);
+            }
+            
             Audit();
         }
     }

@@ -9,7 +9,8 @@ namespace WorkflowEngine.Actions
 {
     public abstract class WorkflowActionBase
     {
-        public string Name => Item?.Attribute("name")?.Value ?? GetType().Name.ToString();
+   
+        public string Name => Item?.Attribute("name")?.Value ?? GetType().Name;
 
         // added .Name for testability
         public bool SkipExecute => new[] { typeof(UserTaskAction).Name, typeof(FinishProcess).Name }.Contains(GetType().Name);

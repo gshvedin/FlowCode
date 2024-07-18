@@ -13,6 +13,12 @@ using WorkflowEngine.Core.Dependencies.Strategies;
 using WorkflowEngine.Helpers.Audit;
 using WorkflowEngine.Helpers;
 using WorkflowEngine.Core.Dependencies.WorkflowProcedures;
+using WorkflowEngine.Core.Dependencies.CustomFunctions;
+using static IronPython.Modules._ast;
+using static IronPython.Runtime.Profiler;
+using Newtonsoft.Json;
+using System.Xml;
+using System.Reflection.Metadata;
 
 namespace TestApp
 {
@@ -20,22 +26,12 @@ namespace TestApp
     public class Program
     {
 
-        //states create processes, processes create states
-        public static void Main(string[] args)
+      static void Main(string[] args)
         {
-            //retrieve data json
-            //string data = System.IO.File.ReadAllText("TestData/data.json");
-            //JObject jobg = JObject.Parse(data);
-            //jobg.AddOrReplaceByPath("$.token.layeruno.1.value", "some valeu");
-            //Console.WriteLine(jobg.ToString());
-            //jobg.AddOrReplaceByPath("$..token.layeruno", "some valeu2");
-
             Execute();
-            Console.WriteLine("Enter any key to quit");
-            Console.ReadKey();
         }
 
-     
+
         private static void Execute()
         {
             //retrieve data json
@@ -49,7 +45,8 @@ namespace TestApp
             var res = wf
                 .ExecuteAsync(data, CancellationToken.None)
                 .Result;
-            var compressed = wf.CurrentInstance.ContextData.CompressedData.ToString();
+            //System.IO.File.WriteAllText("TestData/data.json", res);
+            var compressed = wf.CurrentInstance.ContextData.Data.ToString();
             Console.WriteLine(compressed);
 
         }
@@ -64,6 +61,7 @@ namespace TestApp
                        .AddSingleton<IListService, ListService>()
                        .AddSingleton<ICounterService, CounterService>()
                        .AddSingleton<IWorkflowProcedureService, WorkflowProcedureService>()
+                       .AddSingleton<ICustomFunctionProvider, CustomFunctionsProvider>()
                        .BuildServiceProvider();
 
             return new WorkflowDependecyContainer(serviceProvider)

@@ -1,30 +1,26 @@
 ﻿<Workflow>
 	<Start/>
-	<UserTask name="UI1" markupName="assdd.mkp"/>
+
+
+	<Connector name="foo" connectorName="infosearch" output="connector_result"  saveAs="json">
+		<parameter name="endpoint" type="constant" value="infoSearch" />
+		<parameter name="serviceId" type="appData" value="$.serviceId" />
+		<parameter name="data.request" type="appData" value="$.requst" />
+		<Transformation>
+			<parameter name="transaction" value="$.response.transaction" />
+			<parameter name="error" value="$.response.error" />
+		</Transformation>
+	</Connector>
+
+	<DataStore name="ds_connector_output" expression="$.connector_result.transaction" lang="jpath" output="transaction"/>
 	
-	 <WorkflowProcedure name="getPrintoutData"  version="12" versionType="min" /> <!--strict|min|latest-->
-	
-	<UserTask name="UI2"/>
-	<Condition name="uui" >
-		<test expression="{0} = 1"></test>
-		<iftrue>
-			<GoTo actionName="sidhihio"/>
-		</iftrue>
-	</Condition>
-	
-	<Point name="sidhihio"/>
-	
-	<!--WAIT FOR USER ACTION-->
-	
-	<DataStore output="$.abc"/>
-	
-	<Condition name="uui" >
-		<test expression="{0} = 1"></test>
-		<iftrue>
-			<GoTo actionName="sidhihio"/>
-		</iftrue>
-	</Condition>
 	
 	
 	<UserTask name="UI3"/>
+	<UserTask name="UI3_Custom"/>
+
+	<UserTask name="UpSell_Form"/>
+	<Finish/>
 </Workflow>
+
+ 

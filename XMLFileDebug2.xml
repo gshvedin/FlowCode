@@ -1,0 +1,49 @@
+﻿<root>
+	<transactionId>0</transactionId>
+	<order>0</order>
+	<lang>ua</lang>
+	<optionalData />
+	<inputParam>
+		<orderid>0</orderid>
+		<name>card</name>
+		<kindId>2</kindId>
+		<identifierType>1</identifierType>
+		<value>5555444466667777</value>
+		<stage></stage>
+		<caption>Номер карты</caption>
+	</inputParam>
+	<inputParam>
+		<orderid>1</orderid>
+		<name>phone</name>
+		<kindId>3</kindId>
+		<identifierType>1</identifierType>
+		<value>+380503666666</value>
+		<stage></stage>
+		<caption>Номер телефона</caption>
+	</inputParam>
+	<inputParam>
+		<orderid>3</orderid>
+		<name>skey</name>
+		<kindId>30</kindId>
+		<identifierType>1</identifierType>
+		<value></value>
+		<stage></stage>
+		<caption>Спец ключ</caption>
+	</inputParam>
+	<inputParam>
+		<orderid>4</orderid>
+		<name>period</name>
+		<kindId>27</kindId>
+		<identifierType>1</identifierType>
+		<value>35-78</value>
+		<stage></stage>
+		<caption>Период</caption>
+	</inputParam>
+	<service>
+		<ServiceId>1234</ServiceId>
+		<confirmation>true</confirmation>
+		<confirmationPageTemplate>
+			<uk>[{"caption":"Address:","value":"%{address}%"},{"caption":"Amount to pay:","value":"%{amount}%"}]</uk>
+		</confirmationPageTemplate>
+	</service>
+</root>

@@ -45,7 +45,7 @@ namespace WorkflowEngine.Actions.Implementations
 
                 string savingPath = Item?.Attribute("output")?.Value ?? Name;
 
-                if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.Contains("jn", StringComparison.InvariantCulture) ?? false)
+                if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
                 {
                     CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
                 }
@@ -73,8 +73,8 @@ namespace WorkflowEngine.Actions.Implementations
                 string jpath = parameter.Attribute("value").Value;
                 string tag = parameter.Attribute("tag")?.Value ?? string.Empty;
 
-                string value = response.SelectTokens(jpath).FirstOrDefault()?.ToString();
-                if (!string.IsNullOrEmpty(value))
+                var value = response.SelectTokens(jpath)?.FirstOrDefault();
+                if (value != null)
                 {
                     if (string.IsNullOrEmpty(tag))
                     {

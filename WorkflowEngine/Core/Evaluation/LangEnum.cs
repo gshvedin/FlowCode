@@ -6,6 +6,7 @@
     {
         XPath = 0,
         XPath2 = 1,
-        Python = 2
+        Python = 2,
+        JPath = 3,
     }
 }

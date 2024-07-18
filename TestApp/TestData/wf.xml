@@ -1,87 +1,24 @@
 <Workflow>
-	
+	<Start/>
 
-              <!-- Значит нажали кнпку далее отражаем следующи экран -->
-               <Condition name="checkButtonPressAfter2">
-                        <!-- Если на первом экране нажали кнопку далее и есть чекбокс то отражем экран с вводом комментария иначе отражаем єкран внесения средств -->
-                    	<test expression= "not({0})"> 
-			 	<parameter value="$.checkAgree" type ="appData" />
-			</test>	
-	                <iftrue>
-                                <!-- Фиксируем в контексте экран c которого пойдем на новый-->
-                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
-                                        <parameter value="ScreenCardInput" type="constant" />		
-                                </DataStore>
-                                <UserTask name="ScreenCommentInput"/>
-                        </iftrue>
-			<iffalse>
-                             <!-- Фиксируем в контексте экран c которого пойдем на новый-->
-                             <DataStore  output="$.prevScreen" expression="'{0}'"> 
-                                <parameter value="ScreenCardInput" type="constant" />		
-                             </DataStore>  
-			     <UserTask name="ScreenPay"/>
-                        </iffalse>
-               </Condition>
+	<!--<UserTask name="suu"/>-->
+<Script name="setStageInputParam" output="$.requestDataList.[0]" saveAs="jn" path="$.requestDataList">
+	<parameter name="stage" type="constant" value="X_verify" />
+		<ScriptText>
+			<![CDATA[
+import json
 
-               <Point name="ScreenCommentInput"/>
-
-               <!-- Проверяем результирующее пользовательское действие на втором экране -->
-               <Condition name="checkButtonPressAfter3">
-                        <!-- Если на втором  экране нажали кнопку назад то нужно выйти на предыдущий экран иначе на экран pay -->
-                    	<test expression= "'{0}' = 'prevScreen'"> 
-			 	<parameter value="$.userAction" type ="appData" />
-			</test>	
-	                <iftrue>
-                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
-                                        <parameter value="ScreenCommentInput" type="constant" />		
-                                </DataStore>  
-                        	<UserTask name="ScreenCardInput"/>
-                        </iftrue>
-                        <iffalse>
-                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
-                                        <parameter value="ScreenCommentInput" type="constant" />		
-                                </DataStore> 
-			     <UserTask name="ScreenPay"/>
-                        </iffalse>
-               </Condition>
-
-               <Point name="ScreenPay"/>
-                <!-- Проверяем результирующее пользовательское действие на экране pay -->
-               <Condition name="checkButtonPressAfter4">
-                        <!-- Если на экране pay нажали кнопку назад то нужно выйти на предыдущий экран -->
-                    	<test expression= "'{0}' = 'prevScreen' and '{1}' = 'ScreenCardInput'"> 
-                                 <parameter value="$.userAction" type ="appData" />
-                                 <parameter value="$.prevScreen" type ="appData" />
-			</test>	
-	                <iftrue>
-                                <!-- Фиксируем в контексте актуальный экран -->
-                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
-                                        <parameter value="ScreenPay" type="constant" />		
-                                </DataStore>
-				<UserTask name="ScreenCardInput"/>
-                        </iftrue>
-               </Condition>
-
-
-                <!-- Проверяем результирующее пользовательское действие на экране pay -->
-                <Condition name="checkButtonPressAfter5">
-                        <!-- Если на экране pay нажали кнопку назад то нужно выйти на предыдущий экран -->
-                    	<test expression= "'{0}' = 'prevScreen' and '{1}' = 'ScreenCommentInput'"> 
-                                 <parameter value="$.userAction" type ="appData" />
-                                 <parameter value="$.prevScreen" type ="appData" />
-			</test>	
-	                <iftrue>
-                                <!-- Фиксируем в контексте актуальный экран -->
-                                <DataStore  output="$.prevScreen" expression="'{0}'"> 
-                                        <parameter value="ScreenPay" type="constant" />		
-                                </DataStore>
-				<UserTask name="ScreenCommentInput"/>
-                        </iftrue>
-               </Condition>
-
-        <DataStore name="EndSave" output="$.endFlow.finalScreen" expression="'{0}'"> 
-              <parameter value="mainScreen" type="constant" />		
-        </DataStore>
-
-   	<Finish/>
+data = json.loads(context)
+for requestData in data:
+    if 'inputParam' in requestData:
+        for param in requestData['inputParam']:
+            if 'value' in param and param['value']:
+                param['stage'] = stage  # Set or modify the 'stage' value
+json.dumps(data)
+			]]>
+		</ScriptText>
+	</Script>
+ 
+	<Finish/>
 </Workflow>
+

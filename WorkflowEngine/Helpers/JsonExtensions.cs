@@ -66,6 +66,23 @@ namespace WorkflowEngine.Helpers
 
             return obj.AddByPath(path, newValue);
         }
+
+ 
+        public static JObject AddOrReplaceByPath(this JObject obj, string path, IEnumerable<JToken> tokens)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return obj;
+            }
+
+            if (obj.SelectToken(path) is JToken token)
+            {
+                token.Replace(new JArray(tokens));
+                return obj;
+            }
+
+            return obj.AddByPath(path, new JArray(tokens));
+        }
     }
 }
 
