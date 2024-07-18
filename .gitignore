@@ -352,3 +352,4 @@ obj/*
 /CRM.API/CRM.API/appsettings.json
 /CRM.API/CRM.API/appsettings.Development.json
 /WorkflowEngine/NugetPush.txt
+/ExpressionDebugger
