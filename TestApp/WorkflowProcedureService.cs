@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 // using System.Threading;
@@ -16,6 +17,9 @@ namespace TestApp
         {
             try
             {
+                string versionValue = parameters.FirstOrDefault(p => p.Name == "version")?.Value.ToString();
+                string versionTypeValue = parameters.FirstOrDefault(p => p.Name == "versionType")?.Value.ToString();
+
                 string wfData = System.IO.File.ReadAllText("TestData/WFProcedures/" + procedureName + ".xml");
                 return Task.FromResult(wfData);
             }

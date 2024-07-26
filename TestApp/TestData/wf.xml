@@ -1,32 +1,16 @@
 <Workflow>
 	<Start/>
-
-	<!--<UserTask name="suu"/>-->
-<Script name="setStageInputParam" output="$.requestDataList.[0]" saveAs="jn" path="$.requestDataList" lang="jscript">
-	<parameter name="stage" type="constant" value="X_verify" />
+	   <WorkflowProcedure procedureName="unknownProc" Version="1" matchVer="strict"/>
+	<Script name="setStageInputParam" output="script_result" saveAs="string" path="$.requestDataList"  >
+		<parameter name="stage" type="constant" value="X_verify" />
 		<ScriptText>
 			<![CDATA[
-				// Assume jsonData is a JSON string containing the data
-				var data = JSON.parse(context);
-
-				// Iterate over the data array
-				data.forEach(requestData => {
-					if (requestData.inputParam) { // Check if 'inputParam' exists
-						requestData.inputParam.forEach(param => {
-							if (param.value) { // Check if 'value' exists and is truthy
-								param.stage = stage; // Set or modify the 'stage' value
-							}
-						});
-					}
-				});
-
-				// Convert the modified object back to a JSON string
-				var result = JSON.stringify(data);
-
+				var result = fn_genID( );
 			]]>
 		</ScriptText>
 	</Script>
- 
+	
+ <DataStore name="ds_setStageInputParam1" expression="$.script_result" lang="jpath" output="$.serviceRequestDataList[0].optionalData.timeGenOtp" /> 
 	<Finish/>
 </Workflow>
 

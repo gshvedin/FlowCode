@@ -5,6 +5,8 @@ using WorkflowEngine.Misc;
 using WorkflowEngine.Helpers;
 using System.Threading.Tasks;
 using WorkflowEngine.Core.Dependencies.CustomFunctions;
+using WorkflowEngine.Core.Evaluation;
+using System.Xml.Xsl;
 
 namespace WorkflowEngine.Actions.Implementations
 {
@@ -36,9 +38,16 @@ namespace WorkflowEngine.Actions.Implementations
                 {
                     inputXml = TransformationHelper.JsonToXml(inputXml);
                 }
+                Parameters parameters = new Parameters().Read(Item, CurrentInstance);
+
+                var args = new XsltArgumentList();
+                foreach (var parameter in parameters)
+                {
+                    args.AddParam(parameter.Name, "", parameter.Value);
+                }
 
                 // make transform via XSLT template
-                string result = TransformationHelper.XsltTransform(templateElement.Value, inputXml, null, CurrentInstance.GetDependency<ICustomFunctionProvider>());
+                string result = TransformationHelper.XsltTransform(templateElement.Value, inputXml, args, CurrentInstance.GetDependency<ICustomFunctionProvider>());
 
                 // transform output result to appropriate type (default xml), json if needed
                 if (templateElement.GetAttribute("outputType")?.ToLower(CultureInfo.CurrentCulture) == "json")

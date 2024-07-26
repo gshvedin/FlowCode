@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,7 +19,6 @@ namespace WorkflowEngine.Helpers
 
             // Remove the root object notation and simplifications for JSONPath
             path = Regex.Replace(path, @"^\$\.|^\$\[|\]$", ""); // Removes "$." at the start and "$[" and "]" at the end
-            //path = Regex.Replace(path, @"\[0\]", ""); // Simplifies zero indexer in arrays
 
             // Regex to remove JSONPath query filters like [?(...)]
             path = Regex.Replace(path, @"\[\?\(.*?\)\]", "");
@@ -28,28 +27,63 @@ namespace WorkflowEngine.Helpers
             path = path.Replace("..", ".");
             // Tokenize the path and remove the initial '$' if present
             string[] tokens = path.Split('.');
+
             JToken current = obj;
 
-            for (int i = 0; i < tokens.Length - 1; i++)
+            for (int i = 0; i < tokens.Length; i++)
             {
-                // If the current segment does not exist, create it
-                if (current[tokens[i]] == null)
-                {
-                    // If the next segment is numeric, assume an array is needed
-                    if (i + 1 < tokens.Length && tokens[i + 1].All(char.IsDigit))
-                        current[tokens[i]] = new JArray();
-                    else
-                        current[tokens[i]] = new JObject();
-                }
-                // Move to the next token in the path
-                current = current[tokens[i]];
-            }
+                bool isLastToken = i == tokens.Length - 1;
+                string token = tokens[i];
+                int nextIndex;
 
-            // Set the new value at the final token in the path
-            current[tokens.Last()] = newValue;
+                // Check if current token ends with an index in square brackets e.g., item[0]
+                if (Regex.IsMatch(token, @"\[\d+\]$"))
+                {
+                    string indexPart = Regex.Match(token, @"\[(\d+)\]$").Groups[1].Value;
+                    token = Regex.Replace(token, @"\[\d+\]$", ""); // Remove index from token
+
+                    if (current[token] == null)
+                    {
+                        current[token] = new JArray();
+                    }
+
+                    nextIndex = int.Parse(indexPart);
+                    while (((JArray)current[token]).Count <= nextIndex)
+                    {
+                        ((JArray)current[token]).Add(new JObject());
+                    }
+
+                    if (isLastToken)
+                    {
+                        ((JArray)current[token])[nextIndex] = newValue;
+                        return obj;
+                    }
+                    else
+                    {
+                        current = ((JArray)current[token])[nextIndex];
+                    }
+                }
+                else
+                {
+                    if (current[token] == null)
+                    {
+                        current[token] = new JObject();
+                    }
+
+                    if (isLastToken)
+                    {
+                        current[token] = newValue;
+                    }
+                    else
+                    {
+                        current = current[token];
+                    }
+                }
+            }
 
             return obj;
         }
+
 
         public static JObject AddOrReplaceByPath(this JObject obj, string path, JToken newValue)
         {
@@ -67,7 +101,7 @@ namespace WorkflowEngine.Helpers
             return obj.AddByPath(path, newValue);
         }
 
- 
+
         public static JObject AddOrReplaceByPath(this JObject obj, string path, IEnumerable<JToken> tokens)
         {
             if (string.IsNullOrEmpty(path))
@@ -83,6 +117,9 @@ namespace WorkflowEngine.Helpers
 
             return obj.AddByPath(path, new JArray(tokens));
         }
+
+
+      
     }
 }
 

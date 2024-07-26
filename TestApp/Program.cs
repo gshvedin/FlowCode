@@ -38,8 +38,8 @@ namespace TestApp
             Console.WriteLine("Save workflow output to data.json file? (y/n)");
             var p = Console.ReadKey().KeyChar.ToString().ToLower();
             bool saveContext = p == "y";
-           //retrieve data json
-           string data = System.IO.File.ReadAllText("TestData/data.json");
+            //retrieve data json
+            string data = System.IO.File.ReadAllText("TestData/data.json");
             //retrieve workflow descriptor xml
             string workflow = System.IO.File.ReadAllText("TestData/wf.xml");
 
@@ -49,7 +49,7 @@ namespace TestApp
             var res = wf
                 .ExecuteAsync(data, CancellationToken.None)
                 .Result;
-            if (saveContext)
+            if ( saveContext)
                 System.IO.File.WriteAllText("TestData/data.json", res);
             var compressed = wf.CurrentInstance.ContextData.Data.ToString();
             Console.WriteLine(compressed);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core;
@@ -30,9 +31,9 @@ namespace WorkflowEngine.Actions.Implementations
             List<Parameter> parameters = new List<Parameter>();
             if (!string.IsNullOrEmpty(version))
             {
-                parameters.Add(new Parameter() { Name = "version", Value = version });
+                parameters.Add(new Parameter( "version",  version ));
             }
-            if (!string.IsNullOrEmpty(version))
+            if (!string.IsNullOrEmpty(versionType))
             {
                 parameters.Add(new Parameter("versionType", versionType));
             }

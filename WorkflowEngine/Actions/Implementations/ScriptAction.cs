@@ -1,23 +1,18 @@
-﻿using System.Globalization;
+﻿using Jint;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using WorkflowEngine.Core.Dependencies.Connectors;
+using WorkflowEngine.Core.Dependencies.CustomFunctions;
 using WorkflowEngine.Core.Evaluation;
 using WorkflowEngine.Helpers;
-using WorkflowEngine.Misc;
-using IronPython.Hosting;
-using Microsoft.Scripting.Hosting;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using Jint;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WorkflowEngine.Actions.Implementations
 {
     internal class ScriptAction : WorkflowActionBase
     {
-        public ScriptAction(XElement item) : base()
+        public ScriptAction(XElement item)
         {
             Item = item;
         }
@@ -32,15 +27,7 @@ namespace WorkflowEngine.Actions.Implementations
                    Parameters parameters = new Parameters().Read(Item, CurrentInstance);
                    string input = CurrentInstance.ContextData.GetValue(Item?.Attribute("path")?.Value);
 
-
-                   var langValue = LangEnum.JScript;
-                   string lang = Item.GetAttribute("lang");
-                   if (!string.IsNullOrEmpty(lang))
-                   {
-                       Enum.TryParse(lang, true, out langValue);
-                   }
-
-                   string result = langValue == LangEnum.Python ? ExecutePythonScript(script, input, parameters) : ExecuteJavaScript(script, input, parameters);
+                   string result = ExecuteJavaScript(script, input, parameters);
 
 
                    if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
@@ -55,32 +42,20 @@ namespace WorkflowEngine.Actions.Implementations
                    Audit($"Execution duration {DateTime.Now.Subtract(dateStart).TotalMilliseconds} ms");
                });
 
-
-        }
-
-        private string ExecutePythonScript(string script, string data, Parameters parameters)
-        {
-            // Set up IronPython engine
-            ScriptEngine engine = Python.CreateEngine();
-            ScriptScope scope = engine.CreateScope();
-
-            // Pass JSON data to the Python script via scope
-            scope.SetVariable("context", data);
-
-            //add parameters to context
-            foreach (var parameter in parameters)
-            {
-                scope.SetVariable(parameter.Name, parameter.Value);
-            }
-
-            // Execute the Python script
-            dynamic result = engine.Execute(script, scope);
-            return result;
         }
 
         public string ExecuteJavaScript(string script, string jsonData, Parameters parameters)
         {
-            var engine = new Engine(cfg => cfg.AllowClr());
+            var engine = new Engine(cfg => cfg.AllowClr(typeof(ICustomFunctionProvider).Assembly));
+
+            var customFunctionProvider = CurrentInstance.GetDependency<ICustomFunctionProvider>();
+            if (customFunctionProvider != null)
+            {
+                engine.SetValue("fn_execute", new Func<string, string, string>(customFunctionProvider.execute));
+            }
+
+            engine.SetValue("fn_genID",  new Func<string>(ScriptExtensions.GenerateGuid));
+            engine.SetValue("jpath_query", new Func<string, string, string>(ScriptExtensions.ExecuteJPathQuery));
 
             // Set JSON data in the JavaScript environment
             engine.SetValue("context", jsonData);
@@ -95,5 +70,8 @@ namespace WorkflowEngine.Actions.Implementations
             var result = engine.Execute(script).GetValue("result");
             return result.ToString();
         }
+
+
+        
     }
 }
