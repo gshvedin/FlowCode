@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core.Dependencies.Counters;
 using WorkflowEngine.Core.Evaluation;
+using WorkflowEngine.Helpers;
 using WorkflowEngine.Misc;
 
 namespace WorkflowEngine.Actions.Implementations
@@ -23,9 +24,9 @@ namespace WorkflowEngine.Actions.Implementations
         public override async Task ExecuteAsync()
         {
             DateTime dateStart = DateTime.Now;
-            string counterName = Item?.Attribute("name")?.Value ?? Name;
-            string keyTemplate = Item?.Attribute("key")?.Value;
-            string savingPath = Item?.Attribute("output")?.Value ?? Name;
+            string counterName = Item.GetAttribute("name", ContextData) ?? Name;
+            string keyTemplate = Item.GetAttribute("key", ContextData);
+            string savingPath = Item.GetAttribute("output", ContextData) ?? Name;
 
             object result = null;
 
@@ -44,9 +45,9 @@ namespace WorkflowEngine.Actions.Implementations
             {
                 string[] parameters = new Parameters().Read(Item, CurrentInstance).GetArrayOfValues();
                 string key = string.Format(keyTemplate, parameters);
-                string function = Item?.Attribute("function")?.Value;
-                string tag = Item?.Attribute("tag")?.Value;
-                string filter = Item?.Attribute("filter")?.Value;
+                string function = Item.GetAttribute("function", ContextData);
+                string tag = Item.GetAttribute("tag", ContextData);
+                string filter = Item.GetAttribute("filter", ContextData);
 
                 if (!string.IsNullOrEmpty(filter))
                 {
@@ -54,13 +55,13 @@ namespace WorkflowEngine.Actions.Implementations
                 }
 
                 // parse limitation period for dataset, set default 30d if absent
-                if (!int.TryParse(Item?.Attribute("period")?.Value, out int period) || period == 0)
+                if (!int.TryParse(Item.GetAttribute("period", ContextData), out int period) || period == 0)
                 {
                     period = CurrentInstance.CountersDefaultTtl;
                 }
 
                 // retrive flag that force to ignore possible cached value for key
-                bool.TryParse(Item?.Attribute("ignoreCache")?.Value, out bool ignoreCache);
+                bool.TryParse(Item.GetAttribute("ignoreCache", ContextData), out bool ignoreCache);
 
                 // for minimize external calls to database early retrieved keys is cached and retrieving from memory except ignoreCache flag is true
                 if (!CurrentInstance.CountersCache.TryGetValue(key, out List<CounterData> counterData) || ignoreCache)

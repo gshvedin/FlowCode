@@ -5,10 +5,10 @@ namespace WorkflowEngine.Core
 {
     public class WorkflowContext : IWorkflowContext
     {
-        public WorkflowContext(IInstance currentInstance, string workflowDefinition = null)
+        public WorkflowContext(IInstance currentInstance, string workflowDefinition = null, int depth = 0)
         {
             CurrentInstance = currentInstance;
-            ActionList = new ActionList(workflowDefinition ?? CurrentInstance.WorkflowDefinition, currentInstance);
+            ActionList = new ActionList(workflowDefinition ?? CurrentInstance.WorkflowDefinition, currentInstance, depth);
         }
 
         public ActionList ActionList { get; set; }

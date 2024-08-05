@@ -6,6 +6,6 @@ namespace WorkflowEngine.Actions
     {
         bool SupportsActionType(string typeName);
 
-        WorkflowActionBase CreateAction(XElement item, IInstance currentInstance);
+        WorkflowActionBase CreateAction(XElement item, IInstance currentInstance, int depth);
     }
 }

@@ -48,7 +48,7 @@ namespace WorkflowEngine.Helpers
 
         }
 
-        internal static string GenerateGuid()
+        public static string GenerateGuid()
         {
             return Guid.NewGuid().ToString();
         }

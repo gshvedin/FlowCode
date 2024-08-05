@@ -1,4 +1,224 @@
 {
-  "process": 0
- 
+  "terminalConfiguration": {
+    "configuration": {
+      "LocaleList": [
+        "uk",
+        "en"
+      ]
+    },
+    "CurrentLanguage": {
+      "Name": "uk"
+    }
+  },
+  "paymentDataList": [
+    {
+      "requestData": {
+        "transactionId": 0,
+        "order": 0,
+        "optionalData": {
+          "nfc": 1,
+          "timeGenOtp": "2024-07-26T10:08:18",
+          "otp": "4365"
+        },
+        "inputParam": [
+          {
+            "orderId": 0,
+            "name": "card",
+            "kindId": 2,
+            "identifierType": 1,
+            "value": "5555444466667777",
+            "stage": "pay",
+            "caption": "Номер карты"
+          },
+          {
+            "orderId": 1,
+            "name": "phone",
+            "kindId": 3,
+            "identifierType": 0,
+            "value": "+380503666666",
+            "stage": "pay",
+            "caption": "Номер телефона"
+          },
+          {
+            "orderId": 3,
+            "name": "skey",
+            "kindId": 30,
+            "identifierType": 1,
+            "value": "",
+            "stage": "",
+            "caption": "Спец ключ"
+          },
+          {
+            "orderId": 4,
+            "name": "period",
+            "kindId": 27,
+            "identifierType": 1,
+            "value": "35-78",
+            "stage": "pay",
+            "caption": "Период"
+          }
+        ]
+      },
+      "responseData": {
+        "transaction": {
+          "transactionId": 1001,
+          "providerDataVerify": {
+            "curs": 100,
+            "currency": "UAH",
+            "balance": 55000,
+            "name": "Иванов ИИ"
+          },
+          "ServiceId": 1234,
+          "BanknoteTurnON": 511,
+          "rates": "[{\"rateId\":11135,\"RateType\":1,\"fixed\":2.0,\"max\":null,\"maxStart\":4.99,\"min\":null,\"minStart\":1.0,\"percent\":0.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0},{\"rateId\":11136,\"RateType\":1,\"fixed\":1.0,\"max\":1000.0,\"maxStart\":999.99,\"min\":0.0,\"minStart\":5.0,\"percent\":10.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0},{\"rateId\":11137,\"RateType\":1,\"fixed\":1.0,\"max\":5000.0,\"maxStart\":150000.0,\"min\":0.0,\"minStart\":1000.0,\"percent\":1.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0},{\"rateId\":-1244,\"RateType\":2,\"fixed\":1.0,\"max\":5000.0,\"maxStart\":150000.0,\"min\":1.0,\"minStart\":1.0,\"percent\":5.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0}]",
+          "ratesStr": "[{\"rateId\":11135,\"RateType\":1,\"fixed\":2.0,\"max\":null,\"maxStart\":4.99,\"min\":null,\"minStart\":1.0,\"percent\":0.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0},{\"rateId\":11136,\"RateType\":1,\"fixed\":1.0,\"max\":1000.0,\"maxStart\":999.99,\"min\":0.0,\"minStart\":5.0,\"percent\":10.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0},{\"rateId\":11137,\"RateType\":1,\"fixed\":1.0,\"max\":5000.0,\"maxStart\":150000.0,\"min\":0.0,\"minStart\":1000.0,\"percent\":1.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0},{\"rateId\":-1244,\"RateType\":2,\"fixed\":1.0,\"max\":5000.0,\"maxStart\":150000.0,\"min\":1.0,\"minStart\":1.0,\"percent\":5.0,\"dateTime\":{\"dayOfWeek\":null,\"endTime\":86400,\"startTime\":0},\"ServiceId\":819,\"id\":0}]",
+          "ratesJson": [
+            {
+              "rateId": 11135,
+              "RateType": 1,
+              "fixed": 2.0,
+              "max": null,
+              "maxStart": 4.99,
+              "min": null,
+              "minStart": 1.0,
+              "percent": 0.0,
+              "dateTime": {
+                "dayOfWeek": null,
+                "endTime": 86400,
+                "startTime": 0
+              },
+              "ServiceId": 819,
+              "id": 0
+            },
+            {
+              "rateId": 11136,
+              "RateType": 1,
+              "fixed": 1.0,
+              "max": 1000.0,
+              "maxStart": 999.99,
+              "min": 0.0,
+              "minStart": 5.0,
+              "percent": 10.0,
+              "dateTime": {
+                "dayOfWeek": null,
+                "endTime": 86400,
+                "startTime": 0
+              },
+              "ServiceId": 819,
+              "id": 0
+            },
+            {
+              "rateId": 11137,
+              "RateType": 1,
+              "fixed": 1.0,
+              "max": 5000.0,
+              "maxStart": 150000.0,
+              "min": 0.0,
+              "minStart": 1000.0,
+              "percent": 1.0,
+              "dateTime": {
+                "dayOfWeek": null,
+                "endTime": 86400,
+                "startTime": 0
+              },
+              "ServiceId": 819,
+              "id": 0
+            },
+            {
+              "rateId": -1244,
+              "RateType": 2,
+              "fixed": 1.0,
+              "max": 5000.0,
+              "maxStart": 150000.0,
+              "min": 1.0,
+              "minStart": 1.0,
+              "percent": 5.0,
+              "dateTime": {
+                "dayOfWeek": null,
+                "endTime": 86400,
+                "startTime": 0
+              },
+              "ServiceId": 819,
+              "id": 0
+            }
+          ]
+        }
+      },
+      "startServiceId": 1234
+    },
+    {
+      "requestData": {
+        "transactionId": 0,
+        "order": 1,
+        "optionalData": {},
+        "inputParam": [
+          {
+            "orderId": 1,
+            "name": "phone",
+            "kindId": 3,
+            "identifierType": 0,
+            "value": "+380503666666",
+            "stage": "",
+            "caption": "Номер телефона"
+          },
+          {
+            "orderId": 2,
+            "name": "ndog",
+            "kindId": 27,
+            "identifierType": 1,
+            "value": "",
+            "stage": "",
+            "caption": "Номер договора"
+          }
+        ]
+      },
+      "responseData": {},
+      "startServiceId": 8888
+    }
+  ],
+  "currentService": {
+    "ServiceId": 1234,
+    "confirmation": true,
+    "confirmationPageTemplate": {
+      "uk": "[{\"caption\":\"Address:\",\"value\":\"%{address}%\"},{\"caption\":\"Amount to pay:\",\"value\":\"%{amount}%\"}]"
+    },
+    "payInform": {
+      "uk": "{\"defaultInputShow\":[\"confirm\"],\"customData\":[{\"caption\":{\"path\":\"$.serviceRequestDataList[0].inputParam[?(@.name=='card')].caption\"},\"value\":{\"path\":\"$.serviceResponseData.transaction.providerDataVerify.ab_pan\"},\"show\":[\"payInform\"]},{\"caption\":{\"path\":\"\",\"text\":\"phoneName\"},\"value\":{\"path\":\"$.serviceRequestDataList[0].inputParam[?(@.name=='phone')].value\"},\"style\":\"font-size:25px;color:#4FDB8A\",\"show\":[\"payInform\"]},{\"caption\":{\"text\":\"fioRecipient\"},\"value\":{\"path\":\"$.serviceResponseData.transaction.providerDataVerify.name\"},\"style\":\"font-size:25px;color:#4FDB8A\",\"show\":[\"confirm\",\"payInform\"]}],\"customTemplate\":{\"body\":\"var par1 = jpath_query(context, '$.serviceResponseData.transaction.providerDataVerify.curs');var par2 = jpath_query(context, '$.serviceResponseData.transaction.providerDataVerify.currency');var par3 = jpath_query(context, '$.serviceResponseData.transaction.providerDataVerify.balance') / jpath_query(context, '$.serviceResponseData.transaction.providerDataVerify.curs');var template = \\\"<div style='color:#C73E8B;'>Курс ігрової валюти: 100грн. =\\\"+par1+\\\" / \\\"+par2+\\\" <br>До зарахування: \\\"+par3+\\\" </div>\\\";template;\",\"show\":[\"payInform\"]}}"
+    }
+  },
+  "identSession": {
+    "type": "otp",
+    "identifSessionId": "12345",
+    "otp": "4365",
+    "phone": "+380503666666",
+    "clientTry": 0,
+    "maxClientTry": 12,
+    "payServiceId": 1234,
+    "transactionsId": 10,
+    "authTime": "",
+    "authTypeOtp": "",
+    "timeGenOtp": "2024-07-26T13:08:18",
+    "phoneAuthResponseData": {
+      "info_struct": {
+        "iHint": "codeLocalize1"
+      }
+    }
+  },
+  "clientSessionId": "12346789",
+  "test_result": "111111",
+  "_tmpProcedureParOutputPath": "$.initIdentSession",
+  "initIdentSession": {
+    "type": "otp",
+    "identifSessionId": "12345",
+    "otp": "9637",
+    "phone": "+380503666666",
+    "clientTry": 0,
+    "maxClientTry": 3,
+    "maxWrongOtp": 12,
+    "payServiceId": 0,
+    "transactionsId": "[]",
+    "authTime": "",
+    "authTypeOtp": "",
+    "timeGenOtp": "2024-08-02T17:46:57"
+  }
 }

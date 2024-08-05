@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Xml.Linq;
 using WorkflowEngine.Core;
@@ -27,7 +28,7 @@ namespace WorkflowEngine
 
         public IDependencyContainer DC { get; set; }
 
-        public IList<WorkflowAuditItem> AuditItems { get; set; } = new List<WorkflowAuditItem>();
+        private IList<WorkflowAuditItem> AuditItems { get; set; } = new List<WorkflowAuditItem>();
 
         public IWorkflowProceduresList WorkflowProcedures { get; set; }
 
@@ -98,6 +99,24 @@ namespace WorkflowEngine
             }
 
             return checkResult;
+        }
+
+        public void AddAuditItem(WorkflowAuditItem item)
+        {
+            if (AuditItems.Count == 0)
+            {
+                item.AuditId = 1;
+            }
+            else
+            {
+                item.AuditId = AuditItems.Max(t => t.AuditId) + 1;
+            }
+            AuditItems.Add(item);
+        }
+
+        public IList<WorkflowAuditItem> GetAuditItems()
+        {
+            return AuditItems;
         }
     }
 }

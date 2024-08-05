@@ -4,13 +4,20 @@ using System.Xml.Linq;
 using WorkflowEngine.Helpers.Audit;
 using WorkflowEngine.Actions.Implementations;
 using System.Threading.Tasks;
+using WorkflowEngine.Core;
+using WorkflowEngine.Helpers;
 
 namespace WorkflowEngine.Actions
 {
     public abstract class WorkflowActionBase
     {
-   
-        public string Name => Item?.Attribute("name")?.Value ?? GetType().Name;
+        public int Depth { get; set; }
+        public string Name => Item.GetAttribute("name", ContextData) ?? GetStaticName();
+
+        private string GetStaticName()
+        {
+            return $"{GetType().Name}_{Item.GetHashValue()}";
+        }
 
         // added .Name for testability
         public bool SkipExecute => new[] { typeof(UserTaskAction).Name, typeof(FinishProcess).Name }.Contains(GetType().Name);
@@ -19,7 +26,7 @@ namespace WorkflowEngine.Actions
         {
             get
             {
-                bool v = Guid.TryParse(Item?.Attribute("id")?.Value, out Guid result);
+                bool v = Guid.TryParse(Item.GetAttribute("id", ContextData), out Guid result);
                 return result;
             }
         }
@@ -28,16 +35,20 @@ namespace WorkflowEngine.Actions
 
         internal IInstance CurrentInstance { get; set; }
 
+        internal IContextData ContextData => CurrentInstance.ContextData;
+
         public void Audit(string info = "", WorkflowAuditState state = WorkflowAuditState.Success)
         {
-            CurrentInstance.AuditItems.Add(new WorkflowAuditItem()
+            CurrentInstance.AddAuditItem(new WorkflowAuditItem()
             {
                 NodeId = Id,
-                NodeName = Name,
+                Name = Name,
+                ActionType = GetType().Name.Replace("Action",""),
                 RequestId = CurrentInstance.ContextData.GetCurrentRequestId(),
                 Info = info,
                 State = state,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.UtcNow,
+                Depth = Depth
             });
         }
 

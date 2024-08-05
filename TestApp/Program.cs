@@ -19,16 +19,18 @@ using static IronPython.Runtime.Profiler;
 using Newtonsoft.Json;
 using System.Xml;
 using System.Reflection.Metadata;
+using System.Xml.Serialization;
+using static IronPython.Modules.PythonDateTime;
+using System.Linq;
 
 namespace TestApp
 {
 
     public class Program
     {
-
         static void Main(string[] args)
         {
-
+ 
             Execute();
         }
 
@@ -49,11 +51,18 @@ namespace TestApp
             var res = wf
                 .ExecuteAsync(data, CancellationToken.None)
                 .Result;
-            if ( saveContext)
+            if (saveContext)
                 System.IO.File.WriteAllText("TestData/data.json", res);
             var compressed = wf.CurrentInstance.ContextData.Data.ToString();
             Console.WriteLine(compressed);
 
+            Console.WriteLine("Show audit items? (y/n)");
+            p = Console.ReadKey().KeyChar.ToString().ToLower();
+            if (p == "y")
+                Console.WriteLine(GetAudit(wf.CurrentInstance.GetAuditItems()));
+            else
+                Console.WriteLine("Press any key to exit");
+            Console.ReadLine();
         }
 
         private static WorkflowDependecyContainer GetDependencyContainer()
@@ -66,7 +75,7 @@ namespace TestApp
                        .AddSingleton<IListService, ListService>()
                        .AddSingleton<ICounterService, CounterService>()
                        .AddSingleton<IWorkflowProcedureService, WorkflowProcedureService>()
-                       .AddSingleton<ICustomFunctionProvider, CustomFunctionsProvider>()
+                       .AddScoped<ICustomFunctionProvider, CustomFunctionsProvider>()
                        .BuildServiceProvider();
 
             return new WorkflowDependecyContainer(serviceProvider)
@@ -75,7 +84,26 @@ namespace TestApp
             };
         }
 
+       
+        static string GetAudit(IList<WorkflowAuditItem> items)
+        {
+            // Example list of audit items
+            var auditItems = items.OrderBy(ai => ai.AuditId).ToList();
 
+            // Serializing the tree to JSON
+            var json = JsonConvert.SerializeObject(auditItems.Select(ai => new
+            {
+                AuditId = ai.AuditId,
+                ActionType = ai.ActionType,
+                Name = ai.Name,
+                Timestamp = ai.Timestamp,
+                Info = ai.Info,
+                State = ai.State.ToString(),
+                Depth = ai.Depth
+            }), Newtonsoft.Json.Formatting.Indented);
+            return json;
+
+        }
     }
 
 

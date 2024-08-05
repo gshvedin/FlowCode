@@ -24,7 +24,7 @@ namespace WorkflowEngine.Core.WorkflowProcedures
             XDocument wfXml = XDocument.Parse(workflowDefinition);
             foreach (XElement xe in wfXml.Root.Elements("WorkflowProcedures")?.Elements())
             {
-                Add(new WorkflowProcedureItem() { Name = xe.GetAttribute("name"), Definition = xe.ToString() });
+                Add(new WorkflowProcedureItem() { Name = xe.GetAttribute("name", currentInstance.ContextData), Definition = xe.ToString() });
             }
         }
 

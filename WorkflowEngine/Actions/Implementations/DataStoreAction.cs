@@ -20,8 +20,14 @@ namespace WorkflowEngine.Actions.Implementations
         public override async Task ExecuteAsync()
         {
             string result = await new EvaluateBase(Item, CurrentInstance).EvaluateAsync();
-            string savingPath = Item?.Attribute("output")?.Value ?? Name;
-            if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
+            string savingPath = Item.GetAttribute("output", ContextData) ?? Name;
+            string saveAs = Item.GetAttribute("saveAs", ContextData)?.ToLower(CultureInfo.CurrentCulture) ?? "string";
+
+            if (saveAs.StartsWith("arg", StringComparison.InvariantCulture))
+            {
+                CurrentInstance.ContextData.SetArgument(savingPath, result);
+            }
+            else if (saveAs.StartsWith("j", StringComparison.InvariantCulture))
             {
                 CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
             }
@@ -29,7 +35,7 @@ namespace WorkflowEngine.Actions.Implementations
             {
                 CurrentInstance.ContextData.SetValue(savingPath, result);
             }
-            
+
             Audit();
         }
     }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core.Dependencies.Counters;
 using WorkflowEngine.Core.Evaluation;
+using WorkflowEngine.Helpers;
 using WorkflowEngine.Misc;
 
 namespace WorkflowEngine.Actions.Implementations
@@ -24,8 +25,8 @@ namespace WorkflowEngine.Actions.Implementations
         public override async Task ExecuteAsync()
         {
             DateTime dateStart = DateTime.Now;
-            string counterName = Item?.Attribute("name")?.Value ?? Name;
-            string keyTemplate = Item?.Attribute("key")?.Value;
+            string counterName = Item.GetAttribute("name", ContextData) ?? Name;
+            string keyTemplate = Item.GetAttribute("key", ContextData);
             bool result = false;
             ICounterService counterService = CurrentInstance.GetDependency<ICounterService>();
             if (counterService == null)
@@ -42,7 +43,7 @@ namespace WorkflowEngine.Actions.Implementations
             {
                 Parameters parameters = new Parameters().Read(Item, CurrentInstance);
                 string key = string.Format(keyTemplate, parameters.GetArrayOfValues());
-                if (!int.TryParse(Item?.Attribute("ttl")?.Value, out int ttl) || ttl == 0)
+                if (!int.TryParse(Item.GetAttribute("ttl", ContextData), out int ttl) || ttl == 0)
                 {
                     ttl = CurrentInstance.CountersDefaultTtl;
                 }

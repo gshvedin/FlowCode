@@ -25,7 +25,7 @@ namespace WorkflowEngine.Actions.Implementations
         public override async Task ExecuteAsync()
         {
             DateTime dateStart = DateTime.Now;
-            string connectorName = Item?.Attribute("connectorName")?.Value ?? Name;
+            string connectorName = Item.GetAttribute("connectorName", ContextData) ?? Name;
             IConnector connector = CurrentInstance.GetDependency<IConnectorFactory>()?.Resolve(connectorName);
             if (connector == null)
             {
@@ -43,9 +43,9 @@ namespace WorkflowEngine.Actions.Implementations
                     result = TransformResponse(result, Item.Element("Transformation"));
                 }
 
-                string savingPath = Item?.Attribute("output")?.Value ?? Name;
+                string savingPath = Item.GetAttribute("output", ContextData) ?? Name;
 
-                if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
+                if (Item.GetAttribute("saveAs", ContextData)?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
                 {
                     CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
                 }
@@ -69,9 +69,9 @@ namespace WorkflowEngine.Actions.Implementations
             JObject result = new JObject();
             foreach (XElement parameter in transformationElement.Elements("parameter"))
             {
-                string name = parameter.Attribute("name").Value;
-                string jpath = parameter.Attribute("value").Value;
-                string tag = parameter.Attribute("tag")?.Value ?? string.Empty;
+                string name = parameter.GetAttribute("name", ContextData);
+                string jpath = parameter.GetAttribute("value", ContextData);
+                string tag = parameter.GetAttribute("tag", ContextData) ?? string.Empty;
 
                 var value = response.SelectTokens(jpath)?.FirstOrDefault();
                 if (value != null)

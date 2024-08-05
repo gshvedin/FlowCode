@@ -23,14 +23,14 @@ namespace WorkflowEngine.Actions.Implementations
                {
                    DateTime dateStart = DateTime.Now;
                    string script = Item.Element("ScriptText").Value.Trim();
-                   string savingPath = Item.Attribute("output")?.Value ?? Name;
+                   string savingPath = Item.GetAttribute("output", ContextData) ?? Name;
                    Parameters parameters = new Parameters().Read(Item, CurrentInstance);
-                   string input = CurrentInstance.ContextData.GetValue(Item?.Attribute("path")?.Value);
+                   string input = CurrentInstance.ContextData.GetValue(Item.GetAttribute("path", ContextData));
 
                    string result = ExecuteJavaScript(script, input, parameters);
 
 
-                   if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
+                   if (Item.GetAttribute("saveAs", ContextData)?.ToLower(CultureInfo.CurrentCulture)?.StartsWith("j", StringComparison.InvariantCulture) ?? false)
                    {
                        CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
                    }
@@ -46,15 +46,10 @@ namespace WorkflowEngine.Actions.Implementations
 
         public string ExecuteJavaScript(string script, string jsonData, Parameters parameters)
         {
-            var engine = new Engine(cfg => cfg.AllowClr(typeof(ICustomFunctionProvider).Assembly));
-
-            var customFunctionProvider = CurrentInstance.GetDependency<ICustomFunctionProvider>();
-            if (customFunctionProvider != null)
-            {
-                engine.SetValue("fn_execute", new Func<string, string, string>(customFunctionProvider.execute));
-            }
-
-            engine.SetValue("fn_genID",  new Func<string>(ScriptExtensions.GenerateGuid));
+            var engine = new Engine(cfg => cfg.AllowClr(typeof(FunctionsLocator).Assembly));
+            var fl = new FunctionsLocator(CurrentInstance);
+            engine.SetValue("fn_execute", new Func<string, string, string>(fl.Execute));
+            engine.SetValue("fn_genID", new Func<string>(ScriptExtensions.GenerateGuid));
             engine.SetValue("jpath_query", new Func<string, string, string>(ScriptExtensions.ExecuteJPathQuery));
 
             // Set JSON data in the JavaScript environment
@@ -71,7 +66,5 @@ namespace WorkflowEngine.Actions.Implementations
             return result.ToString();
         }
 
-
-        
     }
 }

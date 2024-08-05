@@ -20,6 +20,9 @@ namespace WorkflowEngine.Core
 
         bool IsInitialized { get; }
 
+        string GetArgument(string name);
+        void SetArgument(string name, string value);
+        void RemoveArgument(string name);
         string GetCurrentProcess();
 
         Guid GetCurrentRequestId();
@@ -31,5 +34,6 @@ namespace WorkflowEngine.Core
         void SetValue(string name, object value);
 
         void SetValueAsJsonNode(string name, string result);
+    
     }
 }

@@ -20,7 +20,7 @@ namespace WorkflowEngine.Actions.Implementations
         {
             DateTime ds = DateTime.Now;
             string actionXml = Item.ToString();
-            ActionList actionList = new ActionList(actionXml, CurrentInstance);
+            ActionList actionList = new ActionList(actionXml, CurrentInstance, Depth + 1);
 
             await Task.WhenAll(actionList.Select(a => a.ExecuteAsync()));
 

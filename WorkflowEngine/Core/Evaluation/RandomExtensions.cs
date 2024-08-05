@@ -21,14 +21,13 @@ namespace WorkflowEngine.Core.Evaluation
 
             string[] keyVal = pattern.Split(":");
 
-            if (keyVal.Length != 2)
+            if (keyVal.Length != 2 && keyVal[0] != "ip")
             {
                 throw new ArgumentException($"Incorrect argument for Random function. Should be typeName:param");
             }
 
             string rundomVal = keyVal[0].ToLower() switch
             {
-                "long" => RandomDigits(keyVal[1]),
                 "int" => RandomDigits(keyVal[1]),
                 "string" => RandomString(int.Parse(keyVal[1])),
                 "ip" => RandomIp(),

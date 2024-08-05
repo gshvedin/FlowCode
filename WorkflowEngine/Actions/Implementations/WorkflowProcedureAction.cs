@@ -19,19 +19,19 @@ namespace WorkflowEngine.Actions.Implementations
         [MethodTimer.Time]
         public override async Task ExecuteAsync()
         {
-            string procedureName = Item.GetAttribute("procedureName");
+            string procedureName = Item.GetAttribute("procedureName", ContextData);
 
             if (string.IsNullOrEmpty(procedureName))
             {
                 throw new WorkflowException("Property procedureName is not defined");
             }
 
-            string version = Item.GetAttribute("version");
-            string versionType = Item.GetAttribute("versionType") ?? Item.GetAttribute("matchVer");
+            string version = Item.GetAttribute("version", ContextData);
+            string versionType = Item.GetAttribute("versionType", ContextData) ?? Item.GetAttribute("matchVer", ContextData);
             List<Parameter> parameters = new List<Parameter>();
             if (!string.IsNullOrEmpty(version))
             {
-                parameters.Add(new Parameter( "version",  version ));
+                parameters.Add(new Parameter("version", version));
             }
             if (!string.IsNullOrEmpty(versionType))
             {
@@ -46,11 +46,12 @@ namespace WorkflowEngine.Actions.Implementations
 
                 foreach (var param in procedureParams)
                 {
-                    CurrentInstance.ContextData.SetValue(param.Name, param.Value);
+                    //CurrentInstance.ContextData.SetValue(param.Name, param.Value); REMOVE
+                    CurrentInstance.ContextData.SetArgument(param.Name, param.Value?.ToString());
                 }
 
 
-                await new WorkflowContext(CurrentInstance, actionXml).ExecuteAsync();
+                await new WorkflowContext(CurrentInstance, actionXml, Depth + 1).ExecuteAsync();
 
                 foreach (var param in procedureParams)
                 {

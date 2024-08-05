@@ -37,5 +37,7 @@
         /// - ${{dateTime:2h-2d}} - time in the range from 2 hours to 2 days.
         /// </summary>
         Random = 5,
+       Function = 6,
+       Arg = 7
     }
 }

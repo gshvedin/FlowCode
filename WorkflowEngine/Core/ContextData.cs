@@ -6,13 +6,14 @@ using System.Xml;
 using WorkflowEngine.Actions;
 using WorkflowEngine.Core.Dependencies.Strategies;
 using WorkflowEngine.Helpers;
+using static IronPython.Runtime.Profiler;
 
 namespace WorkflowEngine.Core
 {
     public class ContextData : IContextData
     {
         private List<WorkflowActionBase> executedActions = new List<WorkflowActionBase>();
-
+        private Dictionary<string, string> arguments = new Dictionary<string, string>();
 
         public ContextData(string contextData, IInstance currentInstance)
         {
@@ -160,20 +161,16 @@ namespace WorkflowEngine.Core
 
         public string GetValue(string name)
         {
-            JToken jToken = Data.SelectToken(name);
-            if (jToken != null)
+            var tokens = Data.SelectTokens(name).ToArray();
+            if (tokens.Length > 1)
             {
-                if (jToken.Type == JTokenType.Date)
-                {
-                    return jToken.Value<DateTime>().ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss.fffffffZ");
-                }
-                else
-                {
-                    return jToken.ToString();
-                }
+                return new JArray(tokens).ToString();
             }
-
-            return null;
+            else
+            {
+                JToken jToken = tokens.FirstOrDefault();
+                return jToken?.ToString();
+            }
         }
 
         public string GetCurrentProcess()
@@ -214,6 +211,29 @@ namespace WorkflowEngine.Core
                 {
                     token.Parent.Remove();
                 }
+            }
+        }
+
+        public string GetArgument(string name)
+        {
+            return arguments.TryGetValue(name, out string value) ? value : null;
+        }
+
+
+        public void SetArgument(string name, string value)
+        {
+            lock (arguments)
+            {
+                // set argument
+                arguments[name] = value;
+            }
+        }
+
+        public void RemoveArgument(string name)
+        {
+            lock (arguments)
+            {
+                arguments.Remove(name);
             }
         }
     }

@@ -23,14 +23,14 @@ namespace WorkflowEngine.Actions.Implementations
             try
             {
                 string strategyDefinition = await CurrentInstance.GetDependency<IStrategyService>()?.GetStrategyDefinitionAsync(Name);
-                CurrentInstance.ContextData.CurrentStrategyContext = new StrategyContext(CurrentInstance, strategyDefinition);
+                CurrentInstance.ContextData.CurrentStrategyContext = new StrategyContext(CurrentInstance, strategyDefinition, Depth + 1);
                 await CurrentInstance.ContextData.CurrentStrategyContext.ExecuteAsync();
 
                 string result = CurrentInstance.ContextData.CurrentStrategyContext.ContextData.ToJson();
 
-                string savingPath = Item?.Attribute("output")?.Value ?? Name;
+                string savingPath = Item.GetAttribute("output", ContextData) ?? Name;
 
-                if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.Contains("jn", StringComparison.InvariantCulture) ?? false)
+                if (Item.GetAttribute("saveAs", ContextData)?.ToLower(CultureInfo.CurrentCulture)?.Contains("jn", StringComparison.InvariantCulture) ?? false)
                 {
                     CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
                 }

@@ -16,7 +16,7 @@ namespace WorkflowEngine.Actions.Implementations
 
         public override async Task ExecuteAsync()
         {
-            string delayStr = Item.GetAttribute("ms");
+            string delayStr = Item.GetAttribute("ms", ContextData);
 
             if (!int.TryParse(delayStr, out int ms))
             {

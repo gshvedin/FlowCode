@@ -8,6 +8,8 @@ namespace WorkflowEngine.Core.Dependencies.CustomFunctions
 {
     public interface ICustomFunctionProvider
     {
-        string execute(string functionName, string args);
+        string Execute(string functionName, string args);
+
+        string ContextData { get; set; }
     }
 }

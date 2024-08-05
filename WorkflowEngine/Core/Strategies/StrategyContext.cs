@@ -7,11 +7,11 @@ namespace WorkflowEngine.Core.Strategies
 {
     public class StrategyContext : IStrategyContext
     {
-        public StrategyContext(IInstance currentInstance, string strategyDefinition, StrategyContextData contextData = null)
+        public StrategyContext(IInstance currentInstance, string strategyDefinition, int depth, StrategyContextData contextData = null)
         {
             CurrentInstance = currentInstance;
             ContextData = contextData ?? new StrategyContextData();
-            ActionList = new ActionList(strategyDefinition, currentInstance);
+            ActionList = new ActionList(strategyDefinition, currentInstance, depth);
         }
 
         public ActionList ActionList { get; set; }

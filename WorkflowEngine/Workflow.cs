@@ -54,6 +54,7 @@ namespace WorkflowEngine
         public async Task<string> ExecuteAsync(string contextData, CancellationToken cancellationToken = default)
         {
             CurrentInstance.ContextData = new ContextData(contextData, CurrentInstance);
+          
             CurrentInstance.CancellationToken = cancellationToken;
 
             if (string.IsNullOrEmpty(CurrentInstance.WorkflowDefinition))
@@ -74,7 +75,7 @@ namespace WorkflowEngine
                 IWorkflowAuditService was = CurrentInstance.GetDependency<IWorkflowAuditService>();
                 if (was != null)
                 {
-                    await was?.AddAuditItems(CurrentInstance.AuditItems, CurrentInstance.DC.MetaInfo);
+                    await was?.AddAuditItems(CurrentInstance.GetAuditItems(), CurrentInstance.DC.MetaInfo);
                 }
             }
 

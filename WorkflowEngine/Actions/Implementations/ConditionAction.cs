@@ -43,11 +43,11 @@ namespace WorkflowEngine.Actions.Implementations
             {
                 if (strategyContextData == null)
                 {
-                    await new WorkflowContext(CurrentInstance, actionXml).ExecuteAsync();
+                    await new WorkflowContext(CurrentInstance, actionXml, Depth).ExecuteAsync();
                 }
                 else
                 {
-                    await new StrategyContext(CurrentInstance, actionXml, strategyContextData).ExecuteAsync();
+                    await new StrategyContext(CurrentInstance, actionXml, Depth, strategyContextData).ExecuteAsync();
                 }
             }
 

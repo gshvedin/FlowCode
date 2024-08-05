@@ -7,6 +7,7 @@ using WorkflowEngine.Misc;
 using WorkflowEngine.Helpers;
 using WorkflowEngine.Core.Dependencies.Lists;
 using Newtonsoft.Json.Linq;
+using WorkflowEngine.Core.Dependencies.CustomFunctions;
 
 namespace WorkflowEngine.Core.Evaluation
 {
@@ -36,18 +37,29 @@ namespace WorkflowEngine.Core.Evaluation
             for (int i = 0; i < parameters.Count; i++)
             {
                 XElement parameter = parameters[i];
-                string name = parameter.GetAttribute("name") ?? $"parameter_{i}";
-                string value = parameter.GetAttribute("value");
-                string tag = parameter.GetAttribute("tag");
-                string defaultValue = parameter.GetAttribute("default");
-                Enum.TryParse(parameter.GetAttribute("type"), true, out ParameterTypeEnum type);
-                Enum.TryParse(parameter.GetAttribute("options"), true, out ParameterOptionsEnum options);
+                string name = parameter.GetAttribute("name", instance.ContextData) ?? $"parameter_{i}";
+                string value = parameter.GetAttribute("value", instance.ContextData);
+                string tag = parameter.GetAttribute("tag", instance.ContextData);
+                string defaultValue = parameter.GetAttribute("default", instance.ContextData);
+                Enum.TryParse(parameter.GetAttribute("type", instance.ContextData), true, out ParameterTypeEnum type);
+                Enum.TryParse(parameter.GetAttribute("options", instance.ContextData), true, out ParameterOptionsEnum options);
 
                 string result = string.Empty;
 
                 if (type == ParameterTypeEnum.Random)
                 {
                     result = RandomExtensions.GetRandom(value);
+                }
+                if (type == ParameterTypeEnum.Arg)
+                {
+                    result = instance.ContextData.GetArgument(value);
+                }
+                else if (type == ParameterTypeEnum.Function)
+                {
+                    string[] args = value.Split('|');
+                    string functionName = args[0];
+                    string functionArgs = args.Length > 1 ? string.Join("|", args.Skip(1)) : string.Empty;
+                    result = new FunctionsLocator(instance).Execute(functionName, functionArgs);
                 }
                 else if (new List<ParameterOptionsEnum>() { { ParameterOptionsEnum.List }, { ParameterOptionsEnum.ListToKeyValue } }.Contains(options))
                 {

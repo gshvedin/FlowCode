@@ -38,7 +38,7 @@ namespace WorkflowEngine.Core.Evaluation
                 {
                     _result = Evaluator.EvaluatePython(_parsedExpression.Expression);
                 }
-                else if(_parsedExpression.LangValue == LangEnum.JPath)
+                else if (_parsedExpression.LangValue == LangEnum.JPath)
                 {
                     _result = Instance.ContextData.GetValue(_parsedExpression.Expression);
                 }
@@ -60,8 +60,8 @@ namespace WorkflowEngine.Core.Evaluation
         private ParsedExpression ParseExpression()
         {
             XElement test = Item.Elements().Where(d => d.Name.LocalName == "test").FirstOrDefault() ?? Item;
-            Enum.TryParse(test.GetAttribute("lang"), true, out LangEnum langValue);
-            string expressionBase = test.GetAttribute("expression");
+            Enum.TryParse(test.GetAttribute("lang", Instance.ContextData), true, out LangEnum langValue);
+            string expressionBase = test.GetAttribute("expression", Instance.ContextData);
             Parameters parameters = new Parameters().Read(test, Instance);
             string expression = string.Format(CultureInfo.InvariantCulture, expressionBase, parameters.GetArrayOfValues());
 

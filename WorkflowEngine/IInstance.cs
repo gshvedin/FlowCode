@@ -26,7 +26,9 @@ namespace WorkflowEngine
 
         public IDependencyContainer DC { get; set; }
 
-        IList<WorkflowAuditItem> AuditItems { get; set; }
+        void AddAuditItem(WorkflowAuditItem item);
+
+        IList<WorkflowAuditItem> GetAuditItems();
 
         IWorkflowProceduresList WorkflowProcedures { get; set; }
 

@@ -18,7 +18,7 @@ namespace WorkflowEngine.Actions.Implementations
         {
             await Task.Run(() =>
              {
-                 CurrentInstance.ContextData.GoToAction = Item.GetAttribute("actionName");
+                 CurrentInstance.ContextData.GoToAction = Item.GetAttribute("actionName", ContextData);
                  Audit();
              });
         }

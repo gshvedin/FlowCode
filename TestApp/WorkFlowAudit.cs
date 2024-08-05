@@ -13,14 +13,14 @@ namespace TestApp
     {
         public Task AddAuditItem(WorkflowAuditItem item)
         {
-            Console.WriteLine(item.Info);
+          //  Console.WriteLine(item.Info);
             return Task.CompletedTask;
         }
 
         public Task AddAuditItems(IList<WorkflowAuditItem> auditItems, Dictionary<string, object> metaInfo)
         {
-            foreach (var item in auditItems)
-                Console.WriteLine(item.Info);
+            //foreach (var item in auditItems)
+            //    Console.WriteLine(item.Info);
 
             return Task.CompletedTask;
         }

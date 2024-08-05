@@ -11,7 +11,7 @@ namespace WorkflowEngine.Actions
             return Enum.TryParse<ActionsEnum>(typeName, true, out _);
         }
 
-        public WorkflowActionBase CreateAction(XElement item, IInstance currentInstance)
+        public WorkflowActionBase CreateAction(XElement item, IInstance currentInstance, int depth)
         {
             Enum.TryParse(item?.Name?.LocalName, true, out ActionsEnum type);
             WorkflowActionBase workflowActionBase = null;
@@ -34,6 +34,9 @@ namespace WorkflowEngine.Actions
                     break;
                 case ActionsEnum.DataStore:
                     workflowActionBase = new DataStoreAction(item);
+                    break;
+                case ActionsEnum.DataRemove:
+                    workflowActionBase = new DataRemoveAction(item);
                     break;
                 case ActionsEnum.SelectCase:
                     workflowActionBase = new SelectCaseAction(item);
@@ -80,6 +83,7 @@ namespace WorkflowEngine.Actions
             }
 
             workflowActionBase.CurrentInstance = currentInstance;
+            workflowActionBase.Depth = depth;
             return workflowActionBase;
         }
     }

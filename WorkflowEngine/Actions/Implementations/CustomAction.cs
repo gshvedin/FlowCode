@@ -34,8 +34,8 @@ namespace WorkflowEngine.Actions.Implementations
             {
                 string result = await customAction.ExecuteAsync(parameters, CurrentInstance.CancellationToken);
 
-                string savingPath = Item?.Attribute("output")?.Value ?? Name;
-                if (Item.GetAttribute("saveAs")?.ToLower(CultureInfo.CurrentCulture)?.Contains("jn", StringComparison.InvariantCulture) ?? false)
+                string savingPath = Item.GetAttribute("output", ContextData) ?? Name;
+                if (Item.GetAttribute("saveAs", ContextData)?.ToLower(CultureInfo.CurrentCulture)?.Contains("jn", StringComparison.InvariantCulture) ?? false)
                 {
                     CurrentInstance.ContextData.SetValueAsJsonNode(savingPath, result);
                 }

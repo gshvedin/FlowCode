@@ -33,10 +33,14 @@ namespace WorkflowEngine.Actions.Implementations
                 }
 
                 // read data and transform to xml (obligated) if it is json
-                string inputXml = CurrentInstance.ContextData.GetValue(Item.GetAttribute("path"));
-                if (templateElement.GetAttribute("inputType")?.ToLower(CultureInfo.CurrentCulture) == "json")
+                string inputXml = CurrentInstance.ContextData.GetValue(Item.GetAttribute("path", ContextData));
+                if (templateElement.GetAttribute("inputType", ContextData)?.ToLower(CultureInfo.CurrentCulture) == "json")
                 {
                     inputXml = TransformationHelper.JsonToXml(inputXml);
+                    if (string.IsNullOrEmpty(inputXml))
+                    {
+                        throw new WorkflowException($"Input data for action '{Name}' is empty.");
+                    }
                 }
                 Parameters parameters = new Parameters().Read(Item, CurrentInstance);
 
@@ -46,18 +50,21 @@ namespace WorkflowEngine.Actions.Implementations
                     args.AddParam(parameter.Name, "", parameter.Value);
                 }
 
+                // add custom functions to xslt
+                args.AddExtensionObject("urn:custom-functions", new FunctionsLocator(CurrentInstance));
+
                 // make transform via XSLT template
-                string result = TransformationHelper.XsltTransform(templateElement.Value, inputXml, args, CurrentInstance.GetDependency<ICustomFunctionProvider>());
+                string result = TransformationHelper.XsltTransform(templateElement.Value, inputXml, args);
 
                 // transform output result to appropriate type (default xml), json if needed
-                if (templateElement.GetAttribute("outputType")?.ToLower(CultureInfo.CurrentCulture) == "json")
+                if (templateElement.GetAttribute("outputType", ContextData)?.ToLower(CultureInfo.CurrentCulture) == "json")
                 {
                     result = TransformationHelper.XmlToJson(result);
-                    CurrentInstance.ContextData.SetValueAsJsonNode(Item.GetAttribute("output"), result);
+                    CurrentInstance.ContextData.SetValueAsJsonNode(Item.GetAttribute("output", ContextData), result);
                 }
                 else
                 {
-                    CurrentInstance.ContextData.SetValue(Item.GetAttribute("output"), result);
+                    CurrentInstance.ContextData.SetValue(Item.GetAttribute("output", ContextData), result);
                 }
 
                 Audit();

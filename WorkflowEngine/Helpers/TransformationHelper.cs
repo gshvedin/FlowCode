@@ -18,6 +18,11 @@ namespace WorkflowEngine.Helpers
 
         public static string JsonToXml(string json, string rootName = "root")
         {
+            if (string.IsNullOrEmpty(json))
+            {
+                return null;
+            }
+
             bool hasArrayRoot = json.Trim().StartsWith("[");
             // Wrap the JSON array in an object with the specified root element name
             if (hasArrayRoot)
@@ -46,7 +51,7 @@ namespace WorkflowEngine.Helpers
         /// <param name="inputXmlString">Xml документ для входа в преобразование</param>
         /// <param name="xslArg">Список аргументов шаблона</param>
         /// <returns>Преобразованный файл в текстовом формате</returns>
-        public static string XsltTransform(string inputXsltString, string inputXmlString, XsltArgumentList xslArg = null, ICustomFunctionProvider functionProvider = null)
+        public static string XsltTransform(string inputXsltString, string inputXmlString, XsltArgumentList xslArg)
         {
             XmlDocument inputXml = new XmlDocument();
             inputXml.LoadXml(inputXmlString);
@@ -70,12 +75,6 @@ namespace WorkflowEngine.Helpers
             XsltSettings settings = new XsltSettings(true, true);
             xslt.Load(xread, settings, new XmlUrlResolver());
             using TextWriter w = new StringWriter();
-
-            xslArg = xslArg ?? new XsltArgumentList();
-            if (functionProvider != null)
-            {
-                xslArg.AddExtensionObject("urn:custom-functions", functionProvider);
-            }
 
             xslt.Transform(inputXml, xslArg, w);
             w.Close();
