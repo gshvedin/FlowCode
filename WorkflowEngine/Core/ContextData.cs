@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using WorkflowEngine.Actions;
+using WorkflowEngine.Actions.Implementations;
 using WorkflowEngine.Core.Dependencies.Strategies;
 using WorkflowEngine.Helpers;
-using static IronPython.Runtime.Profiler;
 
 namespace WorkflowEngine.Core
 {
@@ -199,6 +199,32 @@ namespace WorkflowEngine.Core
         {
             executedActions.Add(action);
             SetValue("CurrentProcess", action?.Name);
+     
+        }
+
+        public void SaveUserTaskTracking(WorkflowActionBase action)
+        {
+            lock (Data)
+            {
+                // Check if the 'TaskTrack' array exists in the Data JObject, and create it if it doesn't
+                if (Data["UserTaskTracking"] == null)
+                {
+                    Data["UserTaskTracking"] = new JArray();
+                }
+
+                JArray taskTrack = (JArray)Data["UserTaskTracking"];
+
+                // Create a new task JObject
+                JObject newTask = new JObject
+                {
+                    ["id"] = taskTrack.Count + 1,  // Increment ID based on count
+                    ["timeStamp"] = DateTime.UtcNow,  // ISO 8601 format
+                    ["taskName"] = action.Name
+                };
+
+                // Insert the new task at the beginning of the array
+                taskTrack.Insert(0, newTask);
+            }
         }
 
         public void RemoveValue(string name)

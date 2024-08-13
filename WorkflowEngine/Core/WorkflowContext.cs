@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using WorkflowEngine.Actions;
+using WorkflowEngine.Actions.Implementations;
 
 namespace WorkflowEngine.Core
 {
@@ -30,7 +31,7 @@ namespace WorkflowEngine.Core
                 { // пропускаем на выполнение только автоматические экшны
                     await action.ExecuteAsync();
                 }
-                else if (action.SkipExecute && CurrentInstance.ContextData.IsInitialized)
+                else if (action.SkipExecute && (CurrentInstance.ContextData.IsInitialized || action is FinishProcess))
                 {// если действие неавтоматическое и уже был процесс, выполняем его в последний раз и прерываем процесс
                     await action.ExecuteAsync();
                     CurrentInstance.ContextData.BreakProcess = true;

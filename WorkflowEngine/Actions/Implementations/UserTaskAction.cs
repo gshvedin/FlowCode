@@ -17,7 +17,8 @@ namespace WorkflowEngine.Actions.Implementations
         {
             await Task.Run(() =>
             {
-                CurrentInstance.ContextData.SetCurrentProcess(this);
+                if (CurrentInstance.SaveUserTaskTracking)
+                    ContextData.SaveUserTaskTracking(this);
                 Audit();
             });
         }

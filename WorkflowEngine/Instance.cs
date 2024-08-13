@@ -22,6 +22,8 @@ namespace WorkflowEngine
 
         public int CountersDefaultTtl { get; set; } = 43200;
 
+        public bool SaveUserTaskTracking { get; set; } = true;
+
         public IDictionary<string, List<CounterData>> CountersCache { get; set; } = new Dictionary<string, List<CounterData>>();
 
         public IContextData ContextData { get; set; }

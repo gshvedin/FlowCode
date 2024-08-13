@@ -30,5 +30,10 @@ namespace WorkflowEngine.Helpers
             }
 
         }
+
+        public string execute(string functionName, string args)
+        {
+            return Execute(functionName, args);
+        }
     }
 }

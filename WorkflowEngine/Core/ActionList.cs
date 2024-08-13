@@ -32,7 +32,7 @@ namespace WorkflowEngine.Core
         private void Validate()
         {
             //check for names duplicates    
-            var duplicates = this.Where(x => !(x is PointAction))
+            var duplicates = this.Where(x => !new[] { nameof(PointAction), nameof(FinishProcess) }.Contains(x.GetType().Name))
                                   .GroupBy(x => x.Name)
                                   .Where(g => g.Count() > 1)
                                   .Select(g => g.Key);

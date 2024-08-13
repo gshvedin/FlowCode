@@ -16,7 +16,10 @@ namespace WorkflowEngine.Actions
 
         private string GetStaticName()
         {
-            return $"{GetType().Name}_{Item.GetHashValue()}";
+            if (SkipExecute)
+                return GetType().Name;
+            else
+                return $"{GetType().Name}_{Item.GetHashValue()}";
         }
 
         // added .Name for testability
@@ -43,7 +46,7 @@ namespace WorkflowEngine.Actions
             {
                 NodeId = Id,
                 Name = Name,
-                ActionType = GetType().Name.Replace("Action",""),
+                ActionType = GetType().Name.Replace("Action", ""),
                 RequestId = CurrentInstance.ContextData.GetCurrentRequestId(),
                 Info = info,
                 State = state,

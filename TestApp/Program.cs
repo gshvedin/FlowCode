@@ -1,27 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Threading;
 using WorkflowEngine;
 using WorkflowEngine.Core.Dependencies.Connectors;
 using WorkflowEngine.Core.Dependencies.Counters;
 using WorkflowEngine.Core.Dependencies.CustomActions;
+using WorkflowEngine.Core.Dependencies.CustomFunctions;
 using WorkflowEngine.Core.Dependencies.Lists;
 using WorkflowEngine.Core.Dependencies.Strategies;
-using WorkflowEngine.Helpers.Audit;
-using WorkflowEngine.Helpers;
 using WorkflowEngine.Core.Dependencies.WorkflowProcedures;
-using WorkflowEngine.Core.Dependencies.CustomFunctions;
-using static IronPython.Modules._ast;
-using static IronPython.Runtime.Profiler;
-using Newtonsoft.Json;
-using System.Xml;
-using System.Reflection.Metadata;
-using System.Xml.Serialization;
-using static IronPython.Modules.PythonDateTime;
-using System.Linq;
+using WorkflowEngine.Helpers.Audit;
 
 namespace TestApp
 {
@@ -48,6 +39,7 @@ namespace TestApp
             //execute workflow
             var dc = GetDependencyContainer();
             var wf = new Workflow(workflow, dc);
+            //wf.CurrentInstance.SaveUserTaskTracking = true;
             var res = wf
                 .ExecuteAsync(data, CancellationToken.None)
                 .Result;

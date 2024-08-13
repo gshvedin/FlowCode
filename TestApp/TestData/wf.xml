@@ -1,6 +1,11 @@
 <Workflow>
 	<Start/>
-	<DataStore  expression="'{0}'">
+	<Finish/>
+	<UserTask name="UI0"/>
+	<UserTask name="UI1"/>
+	<UserTask name="UI2"/>
+	<UserTask name="UI3"/>
+	<!--<DataStore  expression="'{0}'">
 		<parameter name="fn" type="function" value="getMessageLang|ua|blinked|z)" />
 	</DataStore>
 	<DataStore  expression="'{0}'">
@@ -16,9 +21,9 @@
 		<parameter name="parTransactionList" type="appData" value="$.paymentDataList[*].responseData" />
 		<parameter name="parMaxWrongOtp" type="constant" value="12" />
 	</WorkflowProcedure>
-	<!--<WorkflowProcedure name="wf_initIdentSessionJS" procedureName="unknownProc">
+	--><!--<WorkflowProcedure name="wf_initIdentSessionJS" procedureName="unknownProc">
 		<parameter name="parType" type="constant" value="" />
-	</WorkflowProcedure>-->
+	</WorkflowProcedure>--><!--
 
 
 	<Script name="ts1" output="scriptOutput" saveAs="string" path="$"  >
@@ -38,9 +43,9 @@
             ]]>
 		</ScriptText>
 	</Script>
-	<!--<Point name="UI0"/>
-	<Point name="UI0"/>-->
-	<!--<UserTask name="UI0"/>-->
+	--><!--<Point name="UI0"/>
+	<Point name="UI0"/>--><!--
+	--><!--<UserTask name="UI0"/>--><!--
 	<UserTask name="UI0"/>
 	<DataTransform name="generateHtmlRates" output="infoData.rates" path="$.serviceResponseData" >
 		<template inputType="json" outputType="xml">
@@ -56,94 +61,9 @@
             <item>2</item>
         </xsl:variable>
       <table class="commission-body">
-            <!-- Внешний цикл по значениям RateType -->
-             <xsl:for-each select="msxsl:node-set($rts)/item"> 
-                     <xsl:variable name="currentRateType" select="."/> 
-      <xsl:for-each select="msxsl:node-set($storeData)/rates[RateType = $currentRateType]">
-      <xsl:sort select="minStart" order="ascending" data-type="number"/> 
-      <tr> 
-        <td class="commission-title"><div>
-        <xsl:if test="position() = 1 and $currentRateType = 1">
-          <span class="commission-text">
-          <xsl:value-of select="fn:execute('getMessageLang', 'moneyComission||')" /></span>
-        </xsl:if>
-        </div>
-                                </td>
-        <td> <xsl:value-of select="concat(minStart, '-' , maxStart)"/>  </td>
-          <td>
-        <xsl:variable name="pat1">
-          <xsl:choose>
-            <xsl:when test="percent > 0 and fixed > 0">
-              <xsl:value-of select="concat(percent,'% + ',fixed,' ',fn:execute('getCurrencyName','') )" />
-                </xsl:when>
-                                    <xsl:when test="percent > 0">
-                                          <xsl:value-of select="concat(percent,'%')" />
-                                    </xsl:when>
-            <xsl:when test="fixed > 0 ">
-              <xsl:value-of select="concat(fixed,' ',fn:execute('getCurrencyName','') )" />
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="concat('0',' ',fn:execute('getCurrencyName','') )" />
-            </xsl:otherwise>
-          </xsl:choose> 
-        </xsl:variable>
- 
-                                <xsl:variable name="pat2">
-             <xsl:choose>
-             <xsl:when test="min > 0 or max > 0">
-                                         <xsl:variable name="minPart">
-            <xsl:choose>
-                                              <xsl:when test="min > 0 ">
-              <xsl:value-of select="concat(fn:execute('getMessageLang', 'ratesComission_min||'), '. ',min )" />
-               </xsl:when>
-               <xsl:otherwise>
-              <xsl:value-of select="''" />
-               </xsl:otherwise> 
-            </xsl:choose>
-                                         </xsl:variable>
-            <xsl:variable name="separator">
-            <xsl:choose>
-                                              <xsl:when test="min > 0 and max > 0">
-              <xsl:value-of select="','" />
-               </xsl:when>
-               <xsl:otherwise>
-              <xsl:value-of select="''" />
-               </xsl:otherwise> 
-            </xsl:choose>
-                                         </xsl:variable>
-            <xsl:variable name="maxPart">
-            <xsl:choose>
-                                              <xsl:when test="max > 0">
-              <xsl:value-of select="concat(fn:execute('getMessageLang', 'ratesComission_max||'), '. ',max )" />
-               </xsl:when>
-               <xsl:otherwise>
-              <xsl:value-of select="''" />
-               </xsl:otherwise> 
-            </xsl:choose>
-                                         </xsl:variable>
-                                         <xsl:value-of select="concat(' ( ',$minPart,$separator,$maxPart,' )')"/>
-            </xsl:when>
-          <xsl:otherwise>
-                                          <xsl:value-of select="''"/>
-          </xsl:otherwise>
-                                    </xsl:choose> 
-        </xsl:variable>
-            <xsl:value-of select="concat($pat1,$pat2)"/>
-          </td>       
-                       </tr>
-                       </xsl:for-each>
- 
-      </xsl:for-each> 
-    </table> 
-            </xsl:template>
-      </xsl:stylesheet>
-        ]]>
-		</template>
-	</DataTransform>
+           
 
-
-
-	<!--<DataStore name="inlineFunc_fn_custom" expression="'$.dynamicOutput'" output="pathOutput" saveAs="arg"/>-->
+	--><!--<DataStore name="inlineFunc_fn_custom" expression="'$.dynamicOutput'" output="pathOutput" saveAs="arg"/>--><!--
 	<Script output="scriptOutput" saveAs="string" path="$"  >
 		<parameter name="stage" type="appData" value="data" />
 		<parameter name="stage" type="control" value="Text1.Value" />
@@ -177,7 +97,7 @@
 	<DataStore name="inlineFunc_getrandom_uid" expression="'{0}'">
 		<parameter name="fn" type="function" value="genid" />
 	</DataStore>
-	<DataRemove name="dr" output="$.total.nfc"/>
+	<DataRemove name="dr" output="$.total.nfc"/>-->
 
 	<!--<DataRemove name="dr" output="pathOutput" saveAs="arg"/>-->-->
 	<!--<WorkflowProcedure  procedureName="unknownProc" version="1" matchVer="strict">

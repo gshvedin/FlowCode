@@ -14,6 +14,8 @@ namespace WorkflowEngine
 
         bool CompressOutput { get; }
 
+        bool SaveUserTaskTracking { get; set; }
+
         string WorkflowDefinition { get; set; }
 
         IContextData ContextData { get; set; }
