@@ -77,6 +77,9 @@ namespace WorkflowEngine.Actions
                 case ActionsEnum.Script:
                     workflowActionBase = new ScriptAction(item);
                     break;
+                case ActionsEnum.Exception:
+                    workflowActionBase = new ExceptionAction(item);
+                    break;
                 default:
                     workflowActionBase = new DummyAction();
                     break;

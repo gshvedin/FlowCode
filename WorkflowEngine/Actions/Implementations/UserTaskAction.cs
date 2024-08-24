@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Xml.Linq;
+using WorkflowEngine.Core.Evaluation;
 
 namespace WorkflowEngine.Actions.Implementations
 {
@@ -17,8 +18,9 @@ namespace WorkflowEngine.Actions.Implementations
         {
             await Task.Run(() =>
             {
-                if (CurrentInstance.SaveUserTaskTracking)
-                    ContextData.SaveUserTaskTracking(this);
+                Parameters = new Parameters().Read(Item, CurrentInstance);
+                if (CurrentInstance.SaveTracking)
+                    ContextData.SaveTracking(this);
                 Audit();
             });
         }

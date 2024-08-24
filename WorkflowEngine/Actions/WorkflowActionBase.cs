@@ -6,11 +6,13 @@ using WorkflowEngine.Actions.Implementations;
 using System.Threading.Tasks;
 using WorkflowEngine.Core;
 using WorkflowEngine.Helpers;
+using WorkflowEngine.Core.Evaluation;
 
 namespace WorkflowEngine.Actions
 {
     public abstract class WorkflowActionBase
     {
+        public Parameters Parameters { get; set; }
         public int Depth { get; set; }
         public string Name => Item.GetAttribute("name", ContextData) ?? GetStaticName();
 

@@ -169,7 +169,18 @@ namespace WorkflowEngine.Core
             else
             {
                 JToken jToken = tokens.FirstOrDefault();
-                return jToken?.ToString();
+                if (jToken == null)
+                {
+                    return null;
+                }
+                else if (jToken.Type == JTokenType.Date)
+                {
+                    return jToken.Value<DateTime>().ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss");
+                }
+                else
+                {
+                    return jToken.ToString();
+                }
             }
         }
 
@@ -199,20 +210,21 @@ namespace WorkflowEngine.Core
         {
             executedActions.Add(action);
             SetValue("CurrentProcess", action?.Name);
-     
+
         }
 
-        public void SaveUserTaskTracking(WorkflowActionBase action)
+        public void SaveTracking(WorkflowActionBase action)
         {
             lock (Data)
             {
+                //action.CurrentInstance.
                 // Check if the 'TaskTrack' array exists in the Data JObject, and create it if it doesn't
-                if (Data["UserTaskTracking"] == null)
+                if (Data["FlowTracking"] == null)
                 {
-                    Data["UserTaskTracking"] = new JArray();
+                    Data["FlowTracking"] = new JArray();
                 }
 
-                JArray taskTrack = (JArray)Data["UserTaskTracking"];
+                JArray taskTrack = (JArray)Data["FlowTracking"];
 
                 // Create a new task JObject
                 JObject newTask = new JObject

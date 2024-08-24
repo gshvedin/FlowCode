@@ -25,5 +25,6 @@
         SetCounter = 18,
         Script = 19,
         DataRemove = 20,
+        Exception = 21,
     }
 }

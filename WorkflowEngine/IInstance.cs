@@ -14,7 +14,7 @@ namespace WorkflowEngine
 
         bool CompressOutput { get; }
 
-        bool SaveUserTaskTracking { get; set; }
+        bool SaveTracking { get; set; }
 
         string WorkflowDefinition { get; set; }
 

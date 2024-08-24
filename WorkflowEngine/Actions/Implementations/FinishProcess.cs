@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Xml.Linq;
+using WorkflowEngine.Core.Evaluation;
 
 namespace WorkflowEngine.Actions.Implementations
 {
@@ -17,6 +18,7 @@ namespace WorkflowEngine.Actions.Implementations
         {
             await Task.Run(() =>
             {
+                Parameters = new Parameters().Read(Item, CurrentInstance);
                 Audit();
             });
         }

@@ -30,7 +30,7 @@ namespace WorkflowEngine.Core
         string GetValue(string name);
         void RemoveValue(string name);
         void SetCurrentProcess(WorkflowActionBase action);
-        void SaveUserTaskTracking(WorkflowActionBase action);
+        void SaveTracking(WorkflowActionBase action);
 
         void SetValue(string name, object value);
 

@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System.Threading.Tasks;
+using System.Xml.Linq;
+using WorkflowEngine.Core.Evaluation;
 
 namespace WorkflowEngine.Actions.Implementations
 {
@@ -10,6 +12,17 @@ namespace WorkflowEngine.Actions.Implementations
         public PointAction(XElement item)
         {
             Item = item;
+        }
+
+        public override async Task ExecuteAsync()
+        {
+            await Task.Run(() =>
+            {
+                Parameters = new Parameters().Read(Item, CurrentInstance);
+                if (CurrentInstance.SaveTracking)
+                    ContextData.SaveTracking(this);
+                Audit();
+            });
         }
     }
 }

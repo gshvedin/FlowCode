@@ -1,7 +1,7 @@
 ﻿<Workflow>
 	<Start/>
 
-
+	 
 	<Connector name="foo" connectorName="infosearch" output="connector_result"  saveAs="json">
 		<parameter name="endpoint" type="constant" value="infoSearch" />
 		<parameter name="serviceId" type="appData" value="$.serviceId" />
@@ -13,11 +13,11 @@
 	</Connector>
 
 	<DataStore name="ds_connector_output" expression="$.connector_result.transaction" lang="jpath" output="transaction"/>
+
+	<UserTask name="UI3" />
 	
-	
-	
-	<UserTask name="UI3"/>
-	<UserTask name="UI3_Custom"/>
+	<UserTask name="UI3" taskName="someName" screenType="custom" output="UI3_Result"/>
+ 
 
 	<UserTask name="UpSell_Form"/>
 	<Finish/>
