@@ -22,6 +22,17 @@
         /// <summary>
         /// Translate to upper case
         /// </summary>
-        ToUpperCase = 4
+        ToUpperCase = 4,
+
+        /// <summary>
+        /// Make ' quotation for value recieved
+        /// </summary>
+        Quoted = 5,
+
+        /// <summary>
+        /// Trim value
+        /// </summary>
+        Trim = 6,
+
     }
 }

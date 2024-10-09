@@ -1,22 +1,9 @@
 ﻿<Workflow>
 	<Start/>
-	<Point name="p1"/>
-	<Delay ms="100"/>
-
-	<Condition name="cn_getInfoRatesData_checkRatest">
-		<test expression="'(\w+)\s+(car)'" lang="regexp">
-			<parameter value="$.ddddd" type="appData"/>
-		</test>
-		<iftrue>
-			<GoTo actionName="p1"/>
-			<UserTask name="UI3" />
-		</iftrue>
-	</Condition>
-	<UserTask name="UI3" />
-	
-	<UserTask name="HardCodeFinishScreen"/>
-	
-	
+	<DataStore name ="ds2_initIdentSessionJSript1111" output="$._resultArray" expression= " '{0}' ">
+		<!-- <parameter value="$.serviceRouting[?(@.pointName == 'myRoute' )].returnServiceId" type="appData"/> -->
+		<parameter value="$.serviceId" type="appData"/>
+	</DataStore>
 	<Finish>
 		<parameter name="routeServiceId" value="$.serviceId"  type="appData"/>
 		<parameter name="routePointName" value="$.routePointName"  type="appData"/>

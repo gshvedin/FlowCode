@@ -1,4 +1,15 @@
 {
-  "r": 0 
-
+  "serviceId": 1897,
+  "serviceRouting": [
+    {
+      "serviceId": "1111",
+      "pointName": "myRoute",
+      "returnServiceId": "9999"
+    },
+    {
+      "serviceId": "1112",
+      "pointName": "example",
+      "returnServiceId": "8888"
+    }
+  ]
 }

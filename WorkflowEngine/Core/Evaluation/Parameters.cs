@@ -141,37 +141,50 @@ namespace WorkflowEngine.Core.Evaluation
                     result = value;
                 }
 
-                // set default value if was preseted and current value is empty
-                if (!string.IsNullOrEmpty(defaultValue) && string.IsNullOrEmpty(result))
-                {
-                    result = instance.ContextData?.GetValue(defaultValue);
+                result = HandleValue(instance, defaultValue, options, result);
 
-                    if (string.IsNullOrEmpty(result))
-                    {
-                        result = defaultValue;
-                    }
-                }
-
-                if (options == ParameterOptionsEnum.ToLowerCase)
-                {
-                    result = result?.ToLowerInvariant();
-                }
-
-                if (options == ParameterOptionsEnum.ToUpperCase)
-                {
-                    result = result?.ToUpperInvariant();
-                }
-
-                if (value.Contains("'"))
-                {
-                    HasEscapedSymbols = true;
-                    value = value?.Replace("'", "`");
-                }
-
-                Add(new Parameter() { Name = name, Value = value, Tag = tag });
+                Add(new Parameter() { Name = name, Value = result, Tag = tag });
             }
 
             return this;
+        }
+
+        private string HandleValue(IInstance instance, string defaultValue, ParameterOptionsEnum options, string result)
+        {
+            // set default value if was preseted and current value is empty
+            if (!string.IsNullOrEmpty(defaultValue) && string.IsNullOrEmpty(result))
+            {
+                result = instance.ContextData?.GetValue(defaultValue);
+
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = defaultValue;
+                }
+            }
+
+            switch (options)
+            {
+                case ParameterOptionsEnum.ToLowerCase:
+                    result = result?.ToLowerInvariant();
+                    break;
+                case ParameterOptionsEnum.ToUpperCase:
+                    result = result?.ToUpperInvariant();
+                    break;
+                case ParameterOptionsEnum.Trim:
+                    result = result?.Trim();
+                    break;
+                case ParameterOptionsEnum.Quoted:
+                    result = $"'{result}'";
+                    break;
+            }
+
+            if (result.Contains("'"))
+            {
+                HasEscapedSymbols = true;
+                result = result?.Replace("'", "`");
+            }
+
+            return result;
         }
 
         public T GetParameter<T>(string name)

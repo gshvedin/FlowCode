@@ -15,7 +15,7 @@
     <TargetFrameworks></TargetFrameworks>
     <AssemblyVersion>1.7.1</AssemblyVersion>
     <FileVersion>1.7.1</FileVersion>
-    <Version>1.8.11</Version>
+    <Version>1.8.14</Version>
   </PropertyGroup>
 
   <ItemGroup>
