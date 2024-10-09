@@ -2,10 +2,10 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Xml.Linq;
-using WorkflowEngine.Misc;
-using WorkflowEngine.Helpers;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using WorkflowEngine.Helpers;
+using WorkflowEngine.Misc;
 
 namespace WorkflowEngine.Core.Evaluation
 {
@@ -34,7 +34,13 @@ namespace WorkflowEngine.Core.Evaluation
             {
 
                 _parsedExpression = _parsedExpression ?? ParseExpression();
-                if (_parsedExpression.LangValue == LangEnum.Python)
+                if (_parsedExpression.LangValue == LangEnum.Regexp)
+                {
+                    string expression = _parsedExpression.Expression;
+                    string value = _parsedExpression.Parameters[0]?.Value.ToString();
+                    _result = Evaluator.EvaluateRegexp(expression, value).ToString();
+                }
+                else if (_parsedExpression.LangValue == LangEnum.Python)
                 {
                     _result = Evaluator.EvaluatePython(_parsedExpression.Expression);
                 }
@@ -45,6 +51,10 @@ namespace WorkflowEngine.Core.Evaluation
                 else
                 {
                     _result = Evaluator.EvaluateXPath(_parsedExpression.Expression, _parsedExpression.LangValue == LangEnum.XPath2);
+                    if (_parsedExpression.Parameters.HasEscapedSymbols)
+                    {
+                        _result = _result.Replace("`", "'");
+                    }
                 }
 
                 _executionTime = (int)DateTime.Now.Subtract(ds).TotalMilliseconds;
@@ -63,7 +73,7 @@ namespace WorkflowEngine.Core.Evaluation
             Enum.TryParse(test.GetAttribute("lang", Instance.ContextData), true, out LangEnum langValue);
             string expressionBase = test.GetAttribute("expression", Instance.ContextData);
             Parameters parameters = new Parameters().Read(test, Instance);
-            string expression = string.Format(CultureInfo.InvariantCulture, expressionBase, parameters.GetArrayOfValues());
+            string expression = langValue == LangEnum.Regexp ? expressionBase : string.Format(CultureInfo.InvariantCulture, expressionBase, parameters.GetArrayOfValues());
 
             ParsedExpression parsedExpression = new ParsedExpression
             {

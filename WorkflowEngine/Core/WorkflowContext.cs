@@ -31,7 +31,7 @@ namespace WorkflowEngine.Core
                 { // пропускаем на выполнение только автоматические экшны
                     await action.ExecuteAsync();
                 }
-                else if (action.SkipExecute && (CurrentInstance.ContextData.IsInitialized || action is FinishProcess))
+                else if (action.SkipExecute && (CurrentInstance.ContextData.IsInitialized || action is FinishProcess || action is ExceptionAction))
                 {// если действие неавтоматическое и уже был процесс, выполняем его в последний раз и прерываем процесс
                     await action.ExecuteAsync();
                     CurrentInstance.ContextData.BreakProcess = true;

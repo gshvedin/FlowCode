@@ -7,12 +7,18 @@ using System.Threading.Tasks;
 using WorkflowEngine.Core;
 using WorkflowEngine.Helpers;
 using WorkflowEngine.Core.Evaluation;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace WorkflowEngine.Actions
 {
     public abstract class WorkflowActionBase
     {
-        public Parameters Parameters { get; set; }
+        internal Parameters Parameters { get; set; }
+        internal Dictionary<string,string> Keys { get; set; } = new Dictionary<string,string>();
+
+
+
         public int Depth { get; set; }
         public string Name => Item.GetAttribute("name", ContextData) ?? GetStaticName();
 
@@ -25,7 +31,7 @@ namespace WorkflowEngine.Actions
         }
 
         // added .Name for testability
-        public bool SkipExecute => new[] { typeof(UserTaskAction).Name, typeof(FinishProcess).Name }.Contains(GetType().Name);
+        public bool SkipExecute => new[] { typeof(UserTaskAction).Name, typeof(FinishProcess).Name, typeof(ExceptionAction).Name }.Contains(GetType().Name);
 
         public Guid Id
         {
@@ -68,6 +74,32 @@ namespace WorkflowEngine.Actions
             {
                 Audit();
             });
+        }
+
+
+
+        internal JObject GetProcessInfo()
+        {
+            var currentProcessInfo = new JObject();
+            // Add key-value pairs from the Keys dictionary
+            currentProcessInfo["processName"] = Name;
+            foreach (var kvp in Keys)
+            {
+                currentProcessInfo[kvp.Key] = kvp.Value;
+            }
+            // Add Parameters
+            var parametersObj = new JObject();
+            if (Parameters != null && Parameters.Any())
+            {
+                foreach (var param in Parameters)
+                {
+                    parametersObj[param.Name] = JToken.FromObject(param.Value);
+                }
+                currentProcessInfo["parameters"] = parametersObj;
+            }
+          
+
+            return currentProcessInfo;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace WorkflowEngine.Core.Evaluation
 {
     public class Parameters : List<Parameter>
     {
+        public bool HasEscapedSymbols { get; set; } = false;
         public Dictionary<string, object> MetaInfo { get; set; }
 
         public void SetParameter(string name, object value)
@@ -105,7 +106,6 @@ namespace WorkflowEngine.Core.Evaluation
                     foreach (string path in pathes)
                     {
                         result = instance.ContextData?.GetValue(path.Trim());
-
                         if (!string.IsNullOrEmpty(result))
                         {
                             break;
@@ -162,7 +162,13 @@ namespace WorkflowEngine.Core.Evaluation
                     result = result?.ToUpperInvariant();
                 }
 
-                Add(new Parameter() { Name = name, Value = result, Tag = tag });
+                if (value.Contains("'"))
+                {
+                    HasEscapedSymbols = true;
+                    value = value?.Replace("'", "`");
+                }
+
+                Add(new Parameter() { Name = name, Value = value, Tag = tag });
             }
 
             return this;

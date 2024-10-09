@@ -138,6 +138,12 @@ namespace WorkflowEngine.Core.Evaluation
             }
         }
 
+        public static bool EvaluateRegexp(string expression, string value)
+        {
+            Match match = Regex.Match(value, expression);
+            return match.Success;
+        }
+
         private static XPathExpression GetCompiledExpression(string xpath)
         {
             // Compile the XPath expression and set its context to the XPathContext
@@ -151,5 +157,7 @@ namespace WorkflowEngine.Core.Evaluation
 
             return expr;
         }
+
+
     }
 }

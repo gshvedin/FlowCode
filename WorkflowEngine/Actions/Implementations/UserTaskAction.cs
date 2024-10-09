@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Xml.Linq;
 using WorkflowEngine.Core.Evaluation;
+using WorkflowEngine.Helpers;
 
 namespace WorkflowEngine.Actions.Implementations
 {
@@ -16,6 +17,9 @@ namespace WorkflowEngine.Actions.Implementations
 
         public override async Task ExecuteAsync()
         {
+            Parameters = new Parameters().Read(Item, CurrentInstance);
+            Keys["userTaskName"] = Item.GetAttribute("userTaskName", ContextData) ?? Item.GetAttribute("name", ContextData);
+            Keys["output"] = Item.GetAttribute("output", ContextData);
             await Task.Run(() =>
             {
                 Parameters = new Parameters().Read(Item, CurrentInstance);

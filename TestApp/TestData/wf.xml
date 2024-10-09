@@ -1,7 +1,29 @@
 <Workflow>
 	<Start/>
-	<Finish/>
-	<UserTask name="UI0"/>
+	<!--<UserTask name="UI0" userTaskName="ExceptionPage" output="ExPage_Output" >
+		<parameter name="customPage" type="constant" value="true" />
+	</UserTask>
+	<Exception code="123" info="aslkjlkjlkjlkjkl"/>-->
+	<DataStore name="ds23" expression="concat('{0}',' is an ','{1}')">
+		<parameter name="p1" type="constant" value="O'Reilly" />
+		<parameter name="p1" type="constant" value="author" />
+	</DataStore>
+
+	<Condition name="cn_getInfoRatesData_checkRatest">
+		<test expression="^[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}$" lang="regexp">
+			<parameter value="userexample.com" type="constant"/>
+		</test>
+		<iftrue>
+			<UserTask name="UI3" />
+		</iftrue>
+	</Condition>
+
+
+	<Finish >
+		<parameter name="customPage" type="constant" value="true" />
+		<parameter name="nextFlow" type="constant" value="123" />
+	</Finish>
+	</Workflow>
 	<UserTask name="UI1"/>
 	<UserTask name="UI2"/>
 	<UserTask name="UI3"/>
@@ -136,13 +158,13 @@
   -->
 			<!-- Пляски с бубном для получения дефолтного значения параметра parOutputPath -->
 			<DataStore name ="ds1_initIdentSessionJSript" output="_tmpProcedureParOutputPath" expression="'$.initIdentSession'"/>
-			<DataStore name ="ds2_initIdentSessionJSript" output="parPathOutput" expression="'{0}'" saveAs="arg">
-				<parameter value="parPathOutput" type="arg"  default="$._tmpProcedureParOutputPath"/>
+			<DataStore name ="ds2_initIdentSessionJSript" output="parPathOutput" expression="'$.serviceRouting[?(@.serviceId =='{0}')].returnServiceId'" saveAs="arg">
+				<parameter value="parPathOutput" type="arg"  default="$.serviceId"/>
 			</DataStore>
 			<!-- Выполнение скрипта -->
 			<Script name="initIdentSessionJSript" output="#parPathOutput" saveAs="jn" path="$" lang="jscript">
 				<parameter name="type" type="arg" value="parType" />
-				<parameter name="identifSessionId" type="arg" value="parIdentifSessionId" />
+				<parameter name="identifSessionId" type="appData" value="#parPathOutput" />
 				<parameter name="phone" type="arg" value="parPhone" />
 				<parameter name="transactionList" type="arg" value="parTransactionList" />
 				<parameter name="payServiceId" type="arg" value="parPayServiceId" />

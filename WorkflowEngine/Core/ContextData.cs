@@ -210,8 +210,10 @@ namespace WorkflowEngine.Core
         {
             executedActions.Add(action);
             SetValue("CurrentProcess", action?.Name);
-
+            SetValue("CurrentProcessInfo", action?.GetProcessInfo());
         }
+
+    
 
         public void SaveTracking(WorkflowActionBase action)
         {

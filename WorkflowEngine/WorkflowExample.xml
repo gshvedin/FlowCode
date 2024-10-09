@@ -1,26 +1,27 @@
 ﻿<Workflow>
 	<Start/>
+	<Point name="p1"/>
+	<Delay ms="100"/>
 
-	 
-	<Connector name="foo" connectorName="infosearch" output="connector_result"  saveAs="json">
-		<parameter name="endpoint" type="constant" value="infoSearch" />
-		<parameter name="serviceId" type="appData" value="$.serviceId" />
-		<parameter name="data.request" type="appData" value="$.requst" />
-		<Transformation>
-			<parameter name="transaction" value="$.response.transaction" />
-			<parameter name="error" value="$.response.error" />
-		</Transformation>
-	</Connector>
-
-	<DataStore name="ds_connector_output" expression="$.connector_result.transaction" lang="jpath" output="transaction"/>
-
+	<Condition name="cn_getInfoRatesData_checkRatest">
+		<test expression="'(\w+)\s+(car)'" lang="regexp">
+			<parameter value="$.ddddd" type="appData"/>
+		</test>
+		<iftrue>
+			<GoTo actionName="p1"/>
+			<UserTask name="UI3" />
+		</iftrue>
+	</Condition>
 	<UserTask name="UI3" />
 	
-	<UserTask name="UI3" taskName="someName" screenType="custom" output="UI3_Result"/>
- 
-
-	<UserTask name="UpSell_Form"/>
-	<Finish/>
+	<UserTask name="HardCodeFinishScreen"/>
+	
+	
+	<Finish>
+		<parameter name="routeServiceId" value="$.serviceId"  type="appData"/>
+		<parameter name="routePointName" value="$.routePointName"  type="appData"/>
+		<parameter name="destinationAction" value="endFlow" type="constant" />
+	</Finish>
 </Workflow>
 
  

@@ -1,10 +1,8 @@
 ﻿using Jint;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using WorkflowEngine.Core.Dependencies.CustomFunctions;
 using WorkflowEngine.Core.Evaluation;
 using WorkflowEngine.Helpers;
 
